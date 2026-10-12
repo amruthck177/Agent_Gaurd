@@ -332,3 +332,12 @@ Existing agent gateways and guardrails mostly decide by policy and log events. A
 - [ ] **5 Hardening:** all calls via gateway; exact match; execution-time rechecks; atomic one-time use; chain tamper test; no secrets in logs
 - [ ] **6 Presentation:** template and order kept; readable diagrams; ALLOW / ASK HUMAN / BLOCK used consistently; Implemented vs Simulated vs Roadmap tags; unsupported claims and repeats removed; proofread
 - [ ] **7 Live demo:** valid-action run; modified-recipient attack; audit log and outcome; fallback recording; works offline
+- [ ] **8 Security Hardening:** R1-R5 resolved with CTE protection, secret masking, and TOCTOU atomic state re-validation
+
+### I4. Production Hardening Roadmap & Known Limitations
+Documented infrastructure items for production evolution beyond the reference build:
+1. **Physical Process & Tool Isolation (R1)**: Move tools to separate microservices/workers with gRPC/IPC isolation so tools cannot be imported into application or agent runtimes.
+2. **Cryptographic Identity Attestation**: Replace payload `agent_id` with mTLS client certificates or SPIFFE/OIDC verifiable tokens.
+3. **Multi-Tenant Physical Partitioning**: Schema-per-tenant or dedicated DB instances for strict enterprise tenancy.
+4. **Asymmetric Audit Notarization**: Append-only log signing using Ed25519 HSM/KMS keys and public notary anchoring (Rekor).
+5. **High-Throughput Distributed State**: PostgreSQL with Redis distributed locking for multi-region gateway clusters.

@@ -100,6 +100,23 @@ Only three statuses exist everywhere in the system:
 
 ---
 
+## Known Limitations
+
+AgentGuard 2.0 is designed as a deterministic security gateway for AI agent tool enforcement. The reference implementation has the following known limitations scoped for production hardening:
+
+1. **Direct Tool Imports in Non-Production Paths (R1)**:
+   - In production deployments, tools reside in an isolated sandbox or worker process. In this reference implementation, `tools/` is protected by architectural convention, linting, and automated checks.
+2. **Multi-Tenant Isolation**:
+   - Reference implementation uses SQLite with logical agent/task boundaries. Production deployment requires physical schema separation or tenant-isolated instances.
+3. **Agent Workload Authentication**:
+   - `agent_id` is passed as structured metadata. Production infrastructure requires mTLS or signed JWT/SPIFFE workload identity.
+4. **Audit Log Asymmetric Key Signing**:
+   - Audit integrity is secured by a SHA-256 cryptographic hash-chain. Production roadmap introduces external append-only log notaries (e.g. Sigstore/Rekor) and asymmetric Ed25519 signing.
+5. **Rate Limiting & Distributed Locking**:
+   - Concurrency is managed via SQLite WAL mode and atomic `UPDATE` row-locks. Distributed multi-node setups require Redis/Redlock and PostgreSQL.
+
+---
+
 ## Team
 
 | Person | Area |
