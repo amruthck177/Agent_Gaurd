@@ -187,6 +187,22 @@ def _hash_matches(tool: str, attempted_params: Dict[str, Any], stored_hash: str)
     return canonical_hash(sensitive) == stored_hash
 
 
+def _is_expired(expires_str: str, now_dt: Any) -> bool:
+    """Returns True iff expires_str is non-empty and now_dt >= expires_dt."""
+    if not expires_str:
+        return False
+    try:
+        from datetime import datetime as _dt, timezone as _tz
+        expires_dt = _dt.fromisoformat(expires_str)
+        if expires_dt.tzinfo is None:
+            expires_dt = expires_dt.replace(tzinfo=_tz.utc)
+        if now_dt.tzinfo is None:
+            now_dt = now_dt.replace(tzinfo=_tz.utc)
+        return now_dt >= expires_dt
+    except Exception:
+        return False
+
+
 # ---------------------------------------------------------------------------
 # Main execute() function
 # ---------------------------------------------------------------------------
@@ -270,22 +286,7 @@ def execute(
                 else:
                     # 5d. Expiry check (re-validated immediately before execution)
                     now_dt = _clock_now(clock)
-                    expires_str = ap.get("expires_at", "")
-                    is_expired = False
-                    if expires_str:
-                        try:
-                            from datetime import datetime as _dt, timezone as _tz
-                            expires_dt = _dt.fromisoformat(expires_str)
-                            if expires_dt.tzinfo is None:
-                                expires_dt = expires_dt.replace(tzinfo=_tz.utc)
-                            if now_dt.tzinfo is None:
-                                now_dt = now_dt.replace(tzinfo=_tz.utc)
-                            if now_dt >= expires_dt:
-                                is_expired = True
-                        except Exception:
-                            pass
-
-                    if is_expired:
+                    if _is_expired(ap.get("expires_at", ""), now_dt):
                         decision = Decision.BLOCK.value
                         reason = "Approval expired"
 
@@ -299,7 +300,14 @@ def execute(
                         won = _atomic_use_approval(db_path, approval_id, clock)
                         if not won:
                             decision = Decision.BLOCK.value
-                            reason = "Approval already used (replay)"
+                            # Re-read approval to determine exact TOCTOU failure reason (R3)
+                            latest_ap = _approval_get(approval_id, db_path=db_path)
+                            if latest_ap and (latest_ap.get("revoked_at") is not None or latest_ap.get("status") == "revoked"):
+                                reason = "Approval revoked"
+                            elif latest_ap and _is_expired(latest_ap.get("expires_at", ""), _clock_now(clock)):
+                                reason = "Approval expired"
+                            else:
+                                reason = "Approval already used (replay)"
                         else:
                             # ── Step 6: Execute the tool ───────────────────────
                             _run_tool(tool, params)
