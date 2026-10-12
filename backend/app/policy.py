@@ -92,50 +92,113 @@ def _get_task_from_db(db_path: str, task_id: str) -> Optional[Dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
-# SQL Tokenizer & Classifier
 # ---------------------------------------------------------------------------
+# SQL Tokenizer & Classifier (R5: Robust Multi-Variant Statement Analyzer)
+# ---------------------------------------------------------------------------
+STATEMENT_TYPES: Set[str] = {"SELECT", "INSERT", "UPDATE", "DELETE", "DROP", "TRUNCATE", "ALTER"}
+DESTRUCTIVE_KEYWORDS: Set[str] = {"DROP", "TRUNCATE", "ALTER"}
+MUTATING_KEYWORDS: Set[str] = {"DELETE", "INSERT", "UPDATE", "DROP", "TRUNCATE", "ALTER"}
+
+
+def _sanitize_sql_variants(sql: str) -> Tuple[str, str]:
+    """
+    Strips string literals and comments, returning two sanitized variants:
+      1. spaced: multi-line comments replaced by whitespace
+      2. collapsed: multi-line comments removed without whitespace (catches DR/**/OP)
+    """
+    if not sql or not isinstance(sql, str):
+        return "", ""
+    # 1. Strip string literals first so keywords/comments inside strings are ignored
+    no_strings = re.sub(r"'(''|\\.|[^'])*'", " ", sql)
+    # 2. Strip single-line comments
+    no_line = re.sub(r"--[^\r\n]*", " ", no_strings)
+    # 3. Create spaced and collapsed multi-line comment variants
+    spaced = re.sub(r"/\*.*?\*/", " ", no_line, flags=re.DOTALL)
+    collapsed = re.sub(r"/\*.*?\*/", "", no_line, flags=re.DOTALL)
+    return spaced, collapsed
+
+
 def tokenize_sql(sql: str) -> List[str]:
     """
     Tokenizes SQL statement into a list of uppercase tokens,
-    stripping single-line (--) and multi-line (/* */) comments to prevent bypasses.
+    stripping string literals and comments first.
     """
     if not sql or not isinstance(sql, str):
         return []
-    # Strip multi-line comments
-    clean = re.sub(r"/\*.*?\*/", " ", sql, flags=re.DOTALL)
-    # Strip single-line comments
-    clean = re.sub(r"--.*$", " ", clean, flags=re.MULTILINE)
-    # Tokenize words and non-whitespace punctuation
-    raw_tokens = re.findall(r"[A-Za-z0-9_]+|[^\s\w]", clean)
+    spaced, _ = _sanitize_sql_variants(sql)
+    raw_tokens = re.findall(r"[A-Za-z0-9_]+|[^\s\w]", spaced)
     return [t.upper() for t in raw_tokens]
+
+
+def _check_variant_destructive(cleaned_sql: str) -> Tuple[bool, List[str], str, bool]:
+    stmts = [s.strip() for s in cleaned_sql.split(";") if s.strip()]
+    if not stmts:
+        return False, [], "UNKNOWN", False
+
+    first_tokens: List[str] = []
+    primary_stmt_type = "UNKNOWN"
+    primary_has_where = False
+    is_destructive = False
+
+    for idx, stmt in enumerate(stmts):
+        raw_toks = re.findall(r"[A-Za-z0-9_]+|[^\s\w]", stmt)
+        toks = [t.upper() for t in raw_toks]
+        if not toks:
+            continue
+
+        stmt_has_where = "WHERE" in toks
+        stmt_type = "UNKNOWN"
+        for t in toks:
+            if t in STATEMENT_TYPES:
+                stmt_type = t
+                break
+            elif t.isalpha():
+                stmt_type = t
+                break
+
+        if idx == 0:
+            first_tokens = toks
+            primary_stmt_type = stmt_type
+            primary_has_where = stmt_has_where
+
+        # 1. Unconditional destructive operations in any statement
+        if any(dk in toks for dk in DESTRUCTIVE_KEYWORDS):
+            is_destructive = True
+
+        # 2. DELETE without WHERE in any statement
+        if "DELETE" in toks and not stmt_has_where:
+            is_destructive = True
+
+        # 3. Mutating operations inside CTEs or subqueries in a read/query context
+        if stmt_type in ("SELECT", "WITH") or (toks and toks[0] in ("SELECT", "WITH")):
+            for mut in MUTATING_KEYWORDS:
+                if mut in toks:
+                    is_destructive = True
+                    break
+
+        # 4. Stacked mutating statement after primary query
+        if idx > 0 and stmt_type in MUTATING_KEYWORDS:
+            is_destructive = True
+
+    return is_destructive, first_tokens, primary_stmt_type, primary_has_where
 
 
 def classify_sql(sql: str) -> Dict[str, Any]:
     """
-    Classifies a SQL string via a simple tokenizer:
-      - statement_type: SELECT / INSERT / UPDATE / DELETE / DROP / TRUNCATE / UNKNOWN
-      - is_destructive: True if statement contains DROP, TRUNCATE, or is DELETE without WHERE.
-      - has_where: True if statement contains a WHERE clause token.
+    Classifies a SQL string via multi-variant, statement-aware tokenizer:
+      - statement_type: SELECT / INSERT / UPDATE / DELETE / DROP / TRUNCATE / ALTER / UNKNOWN
+      - is_destructive: True if statement contains DROP, TRUNCATE, ALTER,
+                        DELETE without WHERE, or mutations inside CTEs/stacked queries.
+      - has_where: True if primary statement contains a WHERE clause token.
     """
-    tokens = tokenize_sql(sql)
-    stmt_type = "UNKNOWN"
+    spaced, collapsed = _sanitize_sql_variants(sql)
+    dest_s, tokens_s, type_s, where_s = _check_variant_destructive(spaced)
+    dest_c, tokens_c, type_c, where_c = _check_variant_destructive(collapsed)
 
-    for tok in tokens:
-        if tok in STATEMENT_TYPES:
-            stmt_type = tok
-            break
-        elif tok.isalpha():
-            stmt_type = tok
-            break
-
-    has_where = "WHERE" in tokens
-
-    # Plan.md §C6: DROP, TRUNCATE and DELETE without WHERE are hard blocks.
-    is_destructive = (
-        "DROP" in tokens
-        or "TRUNCATE" in tokens
-        or (stmt_type == "DELETE" and not has_where)
-    )
+    is_destructive = dest_s or dest_c
+    tokens = tokens_s if (not dest_c or dest_s) else tokens_c
+    stmt_type = type_c if (type_c in STATEMENT_TYPES and type_s not in STATEMENT_TYPES) else type_s
+    has_where = where_s or where_c
 
     return {
         "tokens": tokens,
