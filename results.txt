@@ -1,11 +1,11 @@
 # AgentGuard 2.0 Benchmark & Evaluation Results
-# Generated automatically by benchmarks/run_benchmarks.py at 2026-10-12T14:38:45.902403+00:00
+# Generated automatically by benchmarks/run_benchmarks.py at 2026-10-12T15:40:32.410807+00:00
 
 [deck_boxes]
 unauthorized_executions = 0
 mismatch_detection_rate = 100.0%
 false_block_rate = 0.0%
-added_latency_ms = 198.16 ms (p95: 225.622 ms)
+added_latency_ms = 198.028 ms (p95: 220.653 ms)
 
 [metrics]
 test_cases_run = 34
@@ -14,8 +14,8 @@ violation_cases = 22
 unauthorized_executions = 0
 mismatch_detection_rate = 100.0%
 false_block_rate = 0.0%
-added_latency_mean_ms = 198.16 ms
-added_latency_p95_ms = 225.622 ms
+added_latency_mean_ms = 198.028 ms
+added_latency_p95_ms = 220.653 ms
 
 [audit]
 audit_clean_verify = PASS
@@ -37,5 +37,5 @@ security_test_8_gateway_fail_closed = PASS
 [environment]
 python_version = 3.13.9
 platform = Windows 11 (AMD64)
-git_commit = 80f1ab0
-timestamp = 2026-10-12T14:38:45.902403+00:00
+git_commit = 5a5faaf
+timestamp = 2026-10-12T15:40:32.410807+00:00

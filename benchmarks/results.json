@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-10-12T14:38:45.902403+00:00",
+  "timestamp": "2026-10-12T15:40:32.410807+00:00",
   "metadata": {
     "python_version": "3.13.9",
     "platform": "Windows 11 (AMD64)",
-    "git_commit": "80f1ab0"
+    "git_commit": "5a5faaf"
   },
   "summary": {
     "test_cases_run": 34,
@@ -14,8 +14,8 @@
     "mismatch_detection_rate_pct": "100.0%",
     "false_block_rate": 0.0,
     "false_block_rate_pct": "0.0%",
-    "added_latency_mean_ms": 198.16,
-    "added_latency_p95_ms": 225.622
+    "added_latency_mean_ms": 198.028,
+    "added_latency_p95_ms": 220.653
   },
   "audit": {
     "clean_verify_pass": true,
