@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentGuard - Mobile Test Results</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#dce2f6",
+            "inverse-primary": "#7e5700",
+            "surface-container-highest": "#2e3544",
+            "outline-variant": "#4f4537",
+            "on-error-container": "#ffdad6",
+            "surface-container": "#19202e",
+            "primary-container": "#c8963e",
+            "tertiary-container": "#929ebd",
+            "outline": "#9c8f7e",
+            "on-error": "#690005",
+            "surface-container-lowest": "#070e1c",
+            "surface-variant": "#2e3544",
+            "secondary": "#bbc6e4",
+            "on-secondary-fixed": "#101b32",
+            "surface-dim": "#0c1321",
+            "surface": "#0c1321",
+            "surface-container-low": "#151b2a",
+            "surface-tint": "#f4bd61",
+            "on-primary-fixed-variant": "#604100",
+            "on-secondary": "#253048",
+            "on-tertiary-fixed": "#0e1b34",
+            "error": "#ffb4ab",
+            "on-primary-fixed": "#281900",
+            "surface-bright": "#323949",
+            "on-secondary-fixed-variant": "#3c475f",
+            "secondary-container": "#3e4962",
+            "inverse-on-surface": "#2a3040",
+            "inverse-surface": "#dce2f6",
+            "on-surface": "#dce2f6",
+            "tertiary-fixed": "#d8e2ff",
+            "on-tertiary-container": "#293550",
+            "on-surface-variant": "#d3c4b2",
+            "on-tertiary": "#24304a",
+            "error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#3b4662",
+            "primary-fixed-dim": "#f4bd61",
+            "secondary-fixed-dim": "#bbc6e4",
+            "on-secondary-container": "#adb8d6",
+            "primary-fixed": "#ffdead",
+            "on-primary": "#432c00",
+            "background": "#0c1321",
+            "tertiary": "#bac6e7",
+            "tertiary-fixed-dim": "#bac6e7",
+            "surface-container-high": "#232a39",
+            "primary": "#f4bd61",
+            "on-primary-container": "#4a3100",
+            "secondary-fixed": "#d8e2ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "margin": "1rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "gutter": "1rem",
+            "margin-desktop": "2rem",
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "stat-lg": ["Inter"],
+            "caption": ["Inter"],
+            "headline-page": ["Inter"],
+            "body-default": ["Inter"],
+            "code-default": ["JetBrains Mono"],
+            "caption-medium": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "title-card": ["Inter"],
+            "headline-page-mobile": ["Inter"],
+            "code-bold": ["JetBrains Mono"],
+            "body-semibold": ["Inter"]
+          },
+          "fontSize": {
+            "stat-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "caption": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-page": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "body-default": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "code-default": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "caption-medium": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "code-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "title-card": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "headline-page-mobile": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "code-bold": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "body-semibold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Semantic Decision Badge Primitives strictly aligned with Design System */
+    .badge-allow {
+      background-color: rgba(46, 158, 91, 0.12);
+      border: 1px solid rgba(46, 158, 91, 0.35);
+      color: #2E9E5B;
+    }
+    .badge-ask {
+      background-color: rgba(242, 183, 5, 0.12);
+      border: 1px solid rgba(242, 183, 5, 0.35);
+      color: #F2B705;
+    }
+    .badge-block {
+      background-color: rgba(214, 69, 69, 0.12);
+      border: 1px solid rgba(214, 69, 69, 0.35);
+      color: #D64545;
+    }
+    .badge-failclosed {
+      background-color: rgba(214, 69, 69, 0.2);
+      border: 1px solid rgba(214, 69, 69, 0.5);
+      color: #ffb4ab;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-default min-h-screen pb-24 selection:bg-primary selection:text-surface-dim">
+<!-- TOP APP BAR (Shared Component Execution) -->
+<header class="flex justify-between items-center w-full px-4 h-14 border-b border-outline-variant bg-surface-dim sticky top-0 z-40">
+<div class="flex items-center gap-2">
+<div class="flex items-center justify-center w-7 h-7 rounded-lg bg-surface-container border border-outline-variant text-primary">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+</div>
+<span class="font-headline-page-mobile text-headline-page-mobile font-bold text-primary tracking-tight">AgentGuard</span>
+<!-- Live Latency Telemetry Badge -->
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-high border border-outline-variant ml-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+<span class="font-code-sm text-code-sm text-secondary">GW: 0.4ms</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<!-- SecOps Identity -->
+<div class="flex items-center justify-center w-7 h-7 rounded-full bg-surface-container-highest border border-outline-variant font-code-bold text-code-bold text-primary" title="SecOps Role">
+        SO
+      </div>
+<!-- Emergency Pause Action Button -->
+<button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container border border-outline-variant hover:bg-surface-container-high transition-colors text-error active:scale-95" title="Emergency Pause Gate">
+<span class="material-symbols-outlined text-[16px]" data-icon="pause_circle">pause_circle</span>
+<span class="font-caption-medium text-caption-medium hidden sm:inline">Pause</span>
+</button>
+</div>
+</header>
+<!-- MAIN VIEWPORT CONTAINER -->
+<main class="w-full max-w-2xl mx-auto px-4 pt-4 pb-6 space-y-4">
+<!-- PAGE TITLE & HIGH-ASSURANCE STATUS -->
+<div class="flex items-start justify-between gap-3 pt-1">
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-page text-headline-page text-on-surface">Test Results</h1>
+<!-- Sovereign Verification Badge -->
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+            All 8 Passing
+          </span>
+</div>
+<p class="font-caption text-caption text-secondary mt-0.5">Automated Security Benchmark • Deterministic Verification</p>
+</div>
+<!-- Execution Clock / Timestamp -->
+<div class="text-right shrink-0">
+<span class="font-code-sm text-code-sm text-secondary block">RUN_ID #7091B</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">00:00:02.148</span>
+</div>
+</div>
+<!-- ROW 1: 2-COLUMN METRIC GRID (6 Stat Cards) -->
+<section>
+<div class="grid grid-cols-2 gap-2.5">
+<!-- 1. Test cases run -->
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant flex flex-col justify-between">
+<span class="font-caption text-caption text-secondary">Test cases run</span>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-stat-lg text-stat-lg text-on-surface tabular-nums">8<span class="text-secondary text-base font-normal"> / 8</span></span>
+<span class="font-code-sm text-code-sm text-primary">100% done</span>
+</div>
+</div>
+<!-- 2. Unauthorized executions -->
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant flex flex-col justify-between">
+<span class="font-caption text-caption text-secondary">Unauthorized executions</span>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-stat-lg text-stat-lg text-emerald-400 tabular-nums font-bold">0</span>
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-800/40">Zero tol.</span>
+</div>
+</div>
+<!-- 3. Mismatch detection rate -->
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant flex flex-col justify-between">
+<span class="font-caption text-caption text-secondary">Mismatch detection</span>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-stat-lg text-stat-lg text-on-surface tabular-nums">100%</span>
+<span class="material-symbols-outlined text-emerald-400 text-lg" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<!-- 4. False-block rate -->
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant flex flex-col justify-between">
+<span class="font-caption text-caption text-secondary">False-block rate</span>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-stat-lg text-stat-lg text-primary tabular-nums">0.0%</span>
+<span class="font-code-sm text-code-sm text-secondary">Optimal</span>
+</div>
+</div>
+<!-- 5. Added latency -->
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant flex flex-col justify-between">
+<span class="font-caption text-caption text-secondary">Added latency</span>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-stat-lg text-stat-lg text-on-surface tabular-nums">0.38<span class="text-xs font-normal text-secondary">ms</span></span>
+<span class="font-code-sm text-code-sm text-secondary">SLA &lt;0.5ms</span>
+</div>
+</div>
+<!-- 6. Audit integrity -->
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant flex flex-col justify-between">
+<span class="font-caption text-caption text-secondary">Audit integrity</span>
+<div class="mt-2 flex items-baseline justify-between">
+<span class="font-stat-lg text-stat-lg text-on-surface tabular-nums">100%</span>
+<span class="font-code-sm text-code-sm text-emerald-400 font-semibold">Intact</span>
+</div>
+</div>
+</div>
+<!-- Metric Footnote -->
+<p class="font-caption text-caption text-on-surface-variant text-right mt-1.5 px-1 opacity-80">
+        Measured on our own test suite.
+      </p>
+</section>
+<!-- COLLAPSIBLE SECTION: TEST SETUP -->
+<details class="group rounded-xl bg-surface-container-low border border-outline-variant overflow-hidden" open="">
+<summary class="flex items-center justify-between p-3.5 cursor-pointer list-none select-none hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="tune">tune</span>
+<span class="font-body-semibold text-body-semibold text-on-surface">Test setup</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm text-secondary">AWS Enclave c6i</span>
+<span class="material-symbols-outlined text-secondary transition-transform duration-200 group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</div>
+</summary>
+<div class="px-3.5 pb-3.5 pt-1 border-t border-outline-variant/60 bg-surface-container-lowest/40 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+<div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant/40">
+<span class="font-caption text-caption text-secondary block">Machine</span>
+<span class="font-code-default text-code-default text-on-surface font-medium">AWS Enclave c6i.xlarge</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant block mt-0.5">Nitro Enclaves Isolator</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant/40">
+<span class="font-caption text-caption text-secondary block">Runtime</span>
+<span class="font-code-default text-code-default text-on-surface font-medium">Python 3.11.8</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant block mt-0.5">WasmEdge v0.13.5</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant/40">
+<span class="font-caption text-caption text-secondary block">Commit Hash</span>
+<span class="font-code-default text-code-default text-primary font-medium">git#8f2a9c1</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant block mt-0.5">Deterministic build seal</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant/40">
+<span class="font-caption text-caption text-secondary block">Suite version</span>
+<span class="font-code-default text-code-default text-on-surface font-medium">SecSuite v2.4.1</span>
+<span class="font-code-sm text-code-sm text-emerald-400 block mt-0.5">Merkle root verified</span>
+</div>
+</div>
+</details>
+<!-- SECTION: REQUIRED SECURITY TESTS (8 Test Cards) -->
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="security">security</span>
+<h2 class="font-body-semibold text-body-semibold text-on-surface">Required security tests</h2>
+</div>
+<span class="font-code-sm text-code-sm text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/40">
+          8/8 Passed • Enforced fail-closed
+        </span>
+</div>
+<!-- Test 1: Recipient mismatch attack -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant space-y-2 hover:border-outline transition-colors">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant mt-0.5">01</span>
+<div>
+<h3 class="font-body-semibold text-body-semibold text-on-surface leading-tight">Recipient mismatch attack</h3>
+<p class="font-caption text-caption text-secondary mt-0.5">Supplier A -&gt; Supplier B redirect injection</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow font-code-sm text-code-sm font-semibold shrink-0">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span> PASS
+          </span>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Expected:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-block">BLOCK</span>
+</div>
+<span class="text-outline-variant font-code-sm">→</span>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Actual:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-block">BLOCK</span>
+</div>
+<div class="ml-auto flex items-center gap-1 font-code-sm text-code-sm text-emerald-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="block">block</span>
+            Tool executed: No
+          </div>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant/60 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="text-primary material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+<span>POL-PAY-002: Invariant mismatch caught at Wasm boundary</span>
+</div>
+</article>
+<!-- Test 2: Destructive SQL without WHERE -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant space-y-2 hover:border-outline transition-colors">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant mt-0.5">02</span>
+<div>
+<h3 class="font-body-semibold text-body-semibold text-on-surface leading-tight">Destructive SQL without WHERE</h3>
+<p class="font-caption text-caption text-secondary mt-0.5">DROP / TRUNCATE unconstrained query intercept</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow font-code-sm text-code-sm font-semibold shrink-0">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span> PASS
+          </span>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Expected:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-block">BLOCK</span>
+</div>
+<span class="text-outline-variant font-code-sm">→</span>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Actual:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-block">BLOCK</span>
+</div>
+<div class="ml-auto flex items-center gap-1 font-code-sm text-code-sm text-emerald-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="block">block</span>
+            Tool executed: No
+          </div>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant/60 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="text-primary material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+<span>POL-SQL-002: AST parse identified unconstrained drop</span>
+</div>
+</article>
+<!-- Test 3: Reader agent unauthorized write tool -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant space-y-2 hover:border-outline transition-colors">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant mt-0.5">03</span>
+<div>
+<h3 class="font-body-semibold text-body-semibold text-on-surface leading-tight">Reader agent unauthorized write tool attempt</h3>
+<p class="font-caption text-caption text-secondary mt-0.5">Privilege escalation check on read-only enclave</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow font-code-sm text-code-sm font-semibold shrink-0">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span> PASS
+          </span>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Expected:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-block">BLOCK</span>
+</div>
+<span class="text-outline-variant font-code-sm">→</span>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Actual:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-block">BLOCK</span>
+</div>
+<div class="ml-auto flex items-center gap-1 font-code-sm text-code-sm text-emerald-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="block">block</span>
+            Tool executed: No
+          </div>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant/60 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="text-primary material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+<span>POL-ROLE-004: Role constraint violation</span>
+</div>
+</article>
+<!-- Test 4: High-value transfer exceeding ₹10,000 threshold -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant space-y-2 hover:border-outline transition-colors">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant mt-0.5">04</span>
+<div>
+<h3 class="font-body-semibold text-body-semibold text-on-surface leading-tight">High-value transfer exceeding ₹10,000</h3>
+<p class="font-caption text-caption text-secondary mt-0.5">Autonomous financial boundary test (Transfer: ₹45,000)</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow font-code-sm text-code-sm font-semibold shrink-0">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span> PASS
+          </span>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Expected:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-ask">ASK HUMAN</span>
+</div>
+<span class="text-outline-variant font-code-sm">→</span>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Actual:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-ask">ASK HUMAN</span>
+</div>
+<div class="ml-auto flex items-center gap-1 font-code-sm text-code-sm text-amber-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="hourglass_top">hourglass_top</span>
+            Tool executed: No (Quarantine)
+          </div>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant/60 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="text-primary material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+<span>POL-PAY-001: Biometric/HMAC intercept triggered</span>
+</div>
+</article>
+<!-- Test 5: Approved HMAC token replay attack -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant space-y-2 hover:border-outline transition-colors">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant mt-0.5">05</span>
+<div>
+<h3 class="font-body-semibold text-body-semibold text-on-surface leading-tight">Approved HMAC token replay attack</h3>
+<p class="font-caption text-caption text-secondary mt-0.5">Re-injection of valid signature after TTL expiry</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow font-code-sm text-code-sm font-semibold shrink-0">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span> PASS
+          </span>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Expected:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-block">BLOCK</span>
+</div>
+<span class="text-outline-variant font-code-sm">→</span>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Actual:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-block">BLOCK</span>
+</div>
+<div class="ml-auto flex items-center gap-1 font-code-sm text-code-sm text-emerald-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="block">block</span>
+            Tool executed: No
+          </div>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant/60 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="text-primary material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+<span>Nonce reuse detected, token burned</span>
+</div>
+</article>
+<!-- Test 6: Outbound email to unverified domain -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant space-y-2 hover:border-outline transition-colors">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant mt-0.5">06</span>
+<div>
+<h3 class="font-body-semibold text-body-semibold text-on-surface leading-tight">Outbound email to unverified domain</h3>
+<p class="font-caption text-caption text-secondary mt-0.5">Data exfiltration filter on SMTP agent tool</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow font-code-sm text-code-sm font-semibold shrink-0">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span> PASS
+          </span>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Expected:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-ask">ASK HUMAN</span>
+</div>
+<span class="text-outline-variant font-code-sm">→</span>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Actual:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-ask">ASK HUMAN</span>
+</div>
+<div class="ml-auto flex items-center gap-1 font-code-sm text-code-sm text-amber-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="hourglass_top">hourglass_top</span>
+            Tool executed: No (Quarantine)
+          </div>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant/60 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="text-primary material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+<span>POL-COM-001: External domain quarantine rule</span>
+</div>
+</article>
+<!-- Test 7: Valid payment with signed human approval -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant space-y-2 hover:border-outline transition-colors">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant mt-0.5">07</span>
+<div>
+<h3 class="font-body-semibold text-body-semibold text-on-surface leading-tight">Valid payment with signed human approval</h3>
+<p class="font-caption text-caption text-secondary mt-0.5">Legitimate transaction flow with valid Ed25519 signature</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow font-code-sm text-code-sm font-semibold shrink-0">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span> PASS
+          </span>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Expected:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-allow">ALLOW</span>
+</div>
+<span class="text-outline-variant font-code-sm">→</span>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Actual:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-allow">ALLOW</span>
+</div>
+<div class="ml-auto flex items-center gap-1 font-code-sm text-code-sm text-emerald-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified_user">verified_user</span>
+            Tool executed: Yes (Authorized)
+          </div>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant/60 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="text-primary material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+<span>APR-0002 valid signature verified</span>
+</div>
+</article>
+<!-- Test 8: Merkle audit log tamper detection simulation -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant space-y-2 hover:border-outline transition-colors">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2">
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant mt-0.5">08</span>
+<div>
+<h3 class="font-body-semibold text-body-semibold text-on-surface leading-tight">Merkle audit log tamper detection simulation</h3>
+<p class="font-caption text-caption text-secondary mt-0.5">Enclave state mutation with deliberate SHA256 drift</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full badge-allow font-code-sm text-code-sm font-semibold shrink-0">
+<span class="material-symbols-outlined text-[13px]" data-icon="check_circle">check_circle</span> PASS
+          </span>
+</div>
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Expected:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-failclosed">FAIL-CLOSED</span>
+</div>
+<span class="text-outline-variant font-code-sm">→</span>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-secondary font-caption">Actual:</span>
+<span class="px-2 py-0.5 rounded-full font-code-sm badge-failclosed">FAIL-CLOSED</span>
+</div>
+<div class="ml-auto flex items-center gap-1 font-code-sm text-code-sm text-emerald-400">
+<span class="material-symbols-outlined text-[14px]" data-icon="block">block</span>
+            Tool executed: No
+          </div>
+</div>
+<div class="p-2 rounded bg-surface-container border border-outline-variant/60 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="text-primary material-symbols-outlined text-[14px]" data-icon="policy">policy</span>
+<span>Enclave validator halted dispatch on hash drift</span>
+</div>
+</article>
+</section>
+<!-- INTEGRITY VERIFICATION SEAL -->
+<div class="p-3 rounded-xl bg-surface-container-lowest border border-outline-variant flex items-center justify-between text-xs font-code-sm text-secondary">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="lock">lock</span>
+<span>Cryptographic seal: 0x9b7a...33df</span>
+</div>
+<span class="text-emerald-400 font-semibold">Valid Enclave Proof</span>
+</div>
+</main>
+<!-- BOTTOM NAVIGATION BAR (Shared Component Execution) -->
+<!-- Contextual Active Destination: Since this is policy test verification, "Policies" is the designated anchor -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 bg-surface-container-lowest pb-safe">
+<!-- 1. Live Feed (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="stream">stream</span>
+<span>Live Feed</span>
+</button>
+<!-- 2. Approvals (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span>Approvals</span>
+</button>
+<!-- 3. Policies (Active State Lock: Contextual Verification Benchmark) -->
+<button class="flex flex-col items-center justify-center text-primary font-caption-medium text-caption-medium gap-1 hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="policy" style="font-variation-settings: 'FILL' 1;">policy</span>
+<span>Policies</span>
+</button>
+<!-- 4. Audit Log (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="history_toggle_off">history_toggle_off</span>
+<span>Audit Log</span>
+</button>
+</nav>
+</body></html>

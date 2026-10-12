@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentGuard - System States &amp; Edge Scenarios</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-container": "#c8963e",
+            "on-error": "#690005",
+            "on-secondary-fixed": "#101b32",
+            "inverse-primary": "#7e5700",
+            "primary": "#f4bd61",
+            "on-tertiary": "#24304a",
+            "on-secondary-fixed-variant": "#3c475f",
+            "on-tertiary-container": "#293550",
+            "surface-tint": "#f4bd61",
+            "on-background": "#dce2f6",
+            "on-surface": "#dce2f6",
+            "on-primary-fixed": "#281900",
+            "surface": "#0c1321",
+            "surface-dim": "#0c1321",
+            "tertiary-fixed-dim": "#bac6e7",
+            "inverse-surface": "#dce2f6",
+            "secondary-container": "#3e4962",
+            "surface-variant": "#2e3544",
+            "on-secondary-container": "#adb8d6",
+            "on-error-container": "#ffdad6",
+            "error": "#ffb4ab",
+            "surface-container": "#19202e",
+            "outline-variant": "#4f4537",
+            "on-primary-container": "#4a3100",
+            "surface-container-lowest": "#070e1c",
+            "secondary": "#bbc6e4",
+            "surface-bright": "#323949",
+            "on-primary-fixed-variant": "#604100",
+            "inverse-on-surface": "#2a3040",
+            "secondary-fixed": "#d8e2ff",
+            "tertiary-container": "#929ebd",
+            "primary-fixed": "#ffdead",
+            "surface-container-high": "#232a39",
+            "surface-container-low": "#151b2a",
+            "on-primary": "#432c00",
+            "error-container": "#93000a",
+            "on-secondary": "#253048",
+            "tertiary-fixed": "#d8e2ff",
+            "secondary-fixed-dim": "#bbc6e4",
+            "tertiary": "#bac6e7",
+            "on-surface-variant": "#d3c4b2",
+            "on-tertiary-fixed": "#0e1b34",
+            "on-tertiary-fixed-variant": "#3b4662",
+            "surface-container-highest": "#2e3544",
+            "outline": "#9c8f7e",
+            "primary-fixed-dim": "#f4bd61",
+            "background": "#0c1321"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "1rem",
+            "space-xs": "0.25rem",
+            "gutter": "1rem",
+            "space-md": "1rem",
+            "margin-desktop": "2rem",
+            "gutter-desktop": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "body-semibold": ["Inter"],
+            "stat-lg": ["Inter"],
+            "caption-medium": ["Inter"],
+            "headline-page": ["Inter"],
+            "code-bold": ["JetBrains Mono"],
+            "caption": ["Inter"],
+            "title-card": ["Inter"],
+            "body-default": ["Inter"],
+            "headline-page-mobile": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "code-default": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "body-semibold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "stat-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "caption-medium": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-page": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "code-bold": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "caption": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "title-card": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "body-default": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-page-mobile": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "code-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "code-default": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .skeleton-shimmer {
+      background: linear-gradient(90deg, #151b2a 25%, #232a39 50%, #151b2a 75%);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite linear;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .animate-beacon {
+      animation: pulse-dot 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen pb-24 md:pb-12 selection:bg-primary-container selection:text-on-primary-container">
+<!-- TOP APP BAR (Shared Component Anchor) -->
+<header class="flex justify-between items-center w-full px-4 h-14 border-b border-outline-variant bg-surface-dim sticky top-0 z-40">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="shield">shield</span>
+<span class="font-headline-page-mobile text-headline-page-mobile font-bold text-primary tracking-tight">AgentGuard</span>
+</div>
+<span class="text-outline-variant font-code-sm text-code-sm">/</span>
+<div class="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded border border-outline-variant bg-surface-container-low font-code-sm text-code-sm text-secondary">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="terminal">terminal</span>
+<span>accounts-agent [v2.4.1]</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant cursor-pointer" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Edge Status Indicator Pill & Action Buttons -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-2.5 py-1 rounded-full border border-error-container bg-error-container/20">
+<span class="w-2 h-2 rounded-full bg-error animate-beacon"></span>
+<span class="font-code-sm text-code-sm text-error font-medium tracking-tight">Gateway: unreachable, failing closed</span>
+</div>
+<button class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-error-container text-error bg-error-container/10 hover:bg-error-container/20 font-caption-medium text-caption-medium transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="pause_circle">pause_circle</span>
+<span>Emergency Pause</span>
+</button>
+</div>
+</header>
+<!-- 1. TOP OF SCREEN / GLOBAL STATE (Gateway Unreachable Fail-Closed Banner) -->
+<section class="w-full bg-error-container border-b border-error/40 px-4 py-2.5 shadow-lg">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3 text-on-error-container">
+<div class="flex items-center gap-3">
+<div class="p-1.5 bg-on-error/20 rounded-lg flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-lg" data-icon="warning">warning</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-body-semibold text-body-semibold text-on-error-container tracking-tight">
+              Gateway unreachable. All actions are being blocked until it returns.
+            </span>
+<span class="hidden sm:inline-block px-1.5 py-0.2 rounded bg-black/30 font-code-sm text-code-sm text-error border border-error/30 uppercase">
+              FAIL-CLOSED ACTIVE
+            </span>
+</div>
+<p class="font-caption text-caption text-on-error-container/80 text-xs">
+            Deterministic cryptographic verification offline. Enclave proxy heartbeat severed. Inbound tool calls are dropped automatically at border.
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-2 text-xs font-code-sm self-end md:self-auto">
+<span class="text-on-error-container/70">Socket: tcp://enclave.sec.int:8443</span>
+<button class="px-2 py-1 rounded bg-black/40 hover:bg-black/60 border border-error/40 text-on-error-container font-code-sm text-code-sm transition-colors">
+          Retry Handshake
+        </button>
+</div>
+</div>
+</section>
+<!-- Main Content Showcase Matrix -->
+<main class="max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-10">
+<!-- Screen Title Header -->
+<div class="border-b border-outline-variant pb-5 flex flex-col md:flex-row justify-between md:items-end gap-4">
+<div>
+<div class="flex items-center gap-2 text-primary font-code-sm text-code-sm mb-1 uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm" data-icon="layers">layers</span>
+<span>Sovereign Enclave Test Matrix</span>
+</div>
+<h1 class="font-headline-page text-headline-page text-on-surface">AgentGuard System States &amp; Edge Scenarios</h1>
+<p class="font-body-default text-body-default text-on-surface-variant mt-1">
+          Forensic reference implementations for autonomous edge states, loading states, zero-data buffers, expired cryptograms, and confirmation modals.
+        </p>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-1 rounded bg-surface-container-high border border-outline-variant font-code-sm text-code-sm text-primary">
+          SPEC: DEF-SEC-V2
+        </span>
+</div>
+</div>
+<!-- STATE 1: LIVE FEED LOADING SKELETON -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary border border-outline-variant font-code-sm text-code-sm">STATE 1</span>
+<h2 class="font-title-card text-title-card text-on-surface">Live Feed Loading Skeleton</h2>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs animate-spin" data-icon="sync">sync</span> Synchronizing Merkle buffer...
+        </span>
+</div>
+<div class="p-4 md:p-6 rounded-xl bg-surface-container-lowest border border-outline-variant space-y-6">
+<!-- 4 Metric Cards Skeleton -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Stat 1 Skeleton -->
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant space-y-3">
+<div class="flex justify-between items-center">
+<div class="h-3 w-24 rounded skeleton-shimmer"></div>
+<div class="h-4 w-4 rounded skeleton-shimmer"></div>
+</div>
+<div class="h-8 w-16 rounded skeleton-shimmer"></div>
+<div class="h-3 w-32 rounded skeleton-shimmer"></div>
+</div>
+<!-- Stat 2 Skeleton -->
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant space-y-3">
+<div class="flex justify-between items-center">
+<div class="h-3 w-20 rounded skeleton-shimmer"></div>
+<div class="h-4 w-4 rounded skeleton-shimmer"></div>
+</div>
+<div class="h-8 w-20 rounded skeleton-shimmer"></div>
+<div class="h-3 w-28 rounded skeleton-shimmer"></div>
+</div>
+<!-- Stat 3 Skeleton -->
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant space-y-3">
+<div class="flex justify-between items-center">
+<div class="h-3 w-20 rounded skeleton-shimmer"></div>
+<div class="h-4 w-4 rounded skeleton-shimmer"></div>
+</div>
+<div class="h-8 w-12 rounded skeleton-shimmer"></div>
+<div class="h-3 w-36 rounded skeleton-shimmer"></div>
+</div>
+<!-- Stat 4 Skeleton -->
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant space-y-3">
+<div class="flex justify-between items-center">
+<div class="h-3 w-24 rounded skeleton-shimmer"></div>
+<div class="h-4 w-4 rounded skeleton-shimmer"></div>
+</div>
+<div class="h-8 w-14 rounded skeleton-shimmer"></div>
+<div class="h-3 w-24 rounded skeleton-shimmer"></div>
+</div>
+</div>
+<!-- Skeleton Stream Table Container -->
+<div class="rounded-lg border border-outline-variant bg-surface-container overflow-hidden">
+<!-- Table Header -->
+<div class="grid grid-cols-12 px-4 py-3 bg-surface-dim border-b border-outline-variant text-code-sm font-code-sm text-secondary gap-2">
+<div class="col-span-2">TIMESTAMP</div>
+<div class="col-span-2">AGENT ID</div>
+<div class="col-span-3">INVOKED TOOL</div>
+<div class="col-span-3">PAYLOAD / RESOURCE</div>
+<div class="col-span-2 text-right">DECISION</div>
+</div>
+<!-- Skeleton Row 1 -->
+<div class="grid grid-cols-12 px-4 py-3.5 border-b border-outline-variant items-center gap-2">
+<div class="col-span-2"><div class="h-3.5 w-24 rounded skeleton-shimmer"></div></div>
+<div class="col-span-2"><div class="h-3.5 w-28 rounded skeleton-shimmer"></div></div>
+<div class="col-span-3"><div class="h-3.5 w-40 rounded skeleton-shimmer"></div></div>
+<div class="col-span-3"><div class="h-3.5 w-48 rounded skeleton-shimmer"></div></div>
+<div class="col-span-2 flex justify-end"><div class="h-6 w-20 rounded-full skeleton-shimmer"></div></div>
+</div>
+<!-- Skeleton Row 2 -->
+<div class="grid grid-cols-12 px-4 py-3.5 border-b border-outline-variant items-center gap-2">
+<div class="col-span-2"><div class="h-3.5 w-20 rounded skeleton-shimmer"></div></div>
+<div class="col-span-2"><div class="h-3.5 w-24 rounded skeleton-shimmer"></div></div>
+<div class="col-span-3"><div class="h-3.5 w-36 rounded skeleton-shimmer"></div></div>
+<div class="col-span-3"><div class="h-3.5 w-32 rounded skeleton-shimmer"></div></div>
+<div class="col-span-2 flex justify-end"><div class="h-6 w-24 rounded-full skeleton-shimmer"></div></div>
+</div>
+<!-- Skeleton Row 3 -->
+<div class="grid grid-cols-12 px-4 py-3.5 items-center gap-2">
+<div class="col-span-2"><div class="h-3.5 w-24 rounded skeleton-shimmer"></div></div>
+<div class="col-span-2"><div class="h-3.5 w-32 rounded skeleton-shimmer"></div></div>
+<div class="col-span-3"><div class="h-3.5 w-44 rounded skeleton-shimmer"></div></div>
+<div class="col-span-3"><div class="h-3.5 w-40 rounded skeleton-shimmer"></div></div>
+<div class="col-span-2 flex justify-end"><div class="h-6 w-16 rounded-full skeleton-shimmer"></div></div>
+</div>
+</div>
+</div>
+</section>
+<!-- STATE 2: LIVE FEED EMPTY STATE -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary border border-outline-variant font-code-sm text-code-sm">STATE 2</span>
+<h2 class="font-title-card text-title-card text-on-surface">Live Feed Empty State</h2>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Boundary Listener: Active (Idle)</span>
+</div>
+<div class="rounded-xl bg-surface-container border border-outline-variant p-8 md:p-14 flex flex-col items-center justify-center text-center">
+<!-- Shield Scan Graphic -->
+<div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border border-primary/20 animate-ping"></div>
+<div class="w-16 h-16 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-3xl" data-icon="radar">radar</span>
+</div>
+</div>
+<h3 class="font-headline-page text-headline-page text-on-surface tracking-tight mb-2">No agent activity yet</h3>
+<p class="font-body-default text-body-default text-on-surface-variant max-w-lg mb-6">
+          Autonomous agents are idle or waiting for scheduled triggers. All inbound tool invocations will stream here in real time.
+        </p>
+<div class="flex flex-wrap items-center justify-center gap-3">
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary font-caption-medium text-caption-medium flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95">
+<span class="material-symbols-outlined text-base" data-icon="bolt">bolt</span>
+<span>Trigger Test Event</span>
+</button>
+<button class="px-4 py-2 rounded-lg border border-outline-variant bg-surface-container-high hover:bg-surface-variant text-on-surface font-caption-medium text-caption-medium flex items-center gap-2 transition-all active:scale-95">
+<span class="material-symbols-outlined text-base text-primary" data-icon="favorite">favorite</span>
+<span>Check Enclave Heartbeat</span>
+</button>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/60 w-full max-w-md flex justify-between text-code-sm font-code-sm text-secondary">
+<span>PORT: 8088 (LISTEN)</span>
+<span>PROTOCOL: gRPC / TLS 1.3</span>
+<span>ENCLAVE: SEC-OK</span>
+</div>
+</div>
+</section>
+<!-- STATE 3: APPROVAL EXPIRED CARD -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary border border-outline-variant font-code-sm text-code-sm">STATE 3</span>
+<h2 class="font-title-card text-title-card text-on-surface">Approval Expired Card (Fail-Closed Dropped)</h2>
+</div>
+<span class="font-code-sm text-code-sm text-error">Decision Status: DROP_UNAPPROVED</span>
+</div>
+<div class="rounded-xl bg-surface-container border border-outline-variant overflow-hidden">
+<!-- Card Header -->
+<div class="p-5 border-b border-outline-variant bg-surface-dim/70 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+<div class="flex items-start sm:items-center gap-3">
+<div class="px-2 py-1 rounded bg-surface-container-high border border-outline-variant font-code-sm text-code-sm text-on-surface-variant">
+              APR-0003
+            </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-card text-title-card text-on-surface">Payment ₹80,000 to Mehta Ice Suppliers</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">#int-8712-e9</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Invoked by accounts-agent at 11:44:12 UTC</span>
+</div>
+</div>
+<!-- Badges -->
+<div class="flex flex-wrap items-center gap-2">
+<!-- EXPIRED CHIP -->
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-code-sm font-medium bg-error-container/20 text-error border border-error/40">
+<span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span>
+              EXPIRED
+            </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-code-sm bg-surface-container-high text-on-surface-variant border border-outline-variant">
+              TTL exceeded (10m limit)
+            </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-code-sm bg-surface-container-high text-secondary border border-outline-variant">
+              Rule: POL-PAY-002
+            </span>
+</div>
+</div>
+<!-- Card Body -->
+<div class="p-5 space-y-4">
+<!-- Parameter Details -->
+<div>
+<span class="font-caption-medium text-caption-medium text-secondary uppercase tracking-wider block mb-2">
+              Enclave Bound Action Parameters
+            </span>
+<div class="rounded-lg bg-surface-container-lowest border border-outline-variant p-3 font-code-sm text-code-sm text-on-surface space-y-1">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Method:</span>
+<span class="text-primary font-code-bold">banking.neft_transfer</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Beneficiary Account:</span>
+<span>HDFC0000281-987410294</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Amount / Currency:</span>
+<span class="font-semibold text-on-surface">80,000.00 INR</span>
+</div>
+<div class="flex justify-between pt-1 border-t border-outline-variant/40">
+<span class="text-on-surface-variant">HMAC Signing Token:</span>
+<span class="text-on-surface-variant line-through font-mono">0x9c3f..88de (Expired at 11:54 - 00:00 remaining)</span>
+</div>
+</div>
+</div>
+<!-- Consequence Alert Callout -->
+<div class="p-3.5 rounded-lg bg-error-container/15 border border-error/30 flex items-start gap-3">
+<span class="material-symbols-outlined text-error text-lg mt-0.5" data-icon="block">block</span>
+<div class="text-xs">
+<p class="font-body-semibold text-body-semibold text-error">
+                Token has expired and can no longer be signed. Action was permanently dropped at gateway boundary (fail-closed).
+              </p>
+<p class="font-caption text-caption text-on-surface-variant mt-0.5">
+                The autonomous transaction was aborted cleanly. No ledger state mutated. Security hash was tombstoned on block #4,912,014.
+              </p>
+</div>
+</div>
+<!-- Actions Disabled Area -->
+<div class="flex flex-col sm:flex-row justify-between sm:items-center pt-2 gap-3">
+<span class="text-xs font-caption text-on-surface-variant italic flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="info">info</span>
+              Re-request from Agent required to initiate fresh cryptographically signed payload.
+            </span>
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-1.5 rounded-lg border border-outline-variant text-on-surface-variant/40 bg-surface-container-high/40 font-caption-medium text-caption-medium cursor-not-allowed flex items-center gap-1.5" disabled="">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+<span>Reject</span>
+</button>
+<button class="px-4 py-1.5 rounded-lg bg-primary/20 text-primary/40 font-caption-medium text-caption-medium border border-outline-variant cursor-not-allowed flex items-center gap-1.5" disabled="">
+<span class="material-symbols-outlined text-sm" data-icon="done">done</span>
+<span>Approve Action</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. CONFIRMATION DIALOGS / MODALS -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary border border-outline-variant font-code-sm text-code-sm">STATE 4 &amp; 5</span>
+<h2 class="font-title-card text-title-card text-on-surface">Modal Confirmation Dialogs (Side-by-Side Reference)</h2>
+</div>
+<span class="font-code-sm text-code-sm text-secondary">Z-INDEX 3: FLOATING OVERLAYS</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Modal A: Pause Agent Execution -->
+<div class="rounded-xl bg-surface-container border border-outline-variant p-6 shadow-2xl relative flex flex-col justify-between">
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div class="flex items-center gap-2.5 text-error">
+<div class="p-1.5 rounded-lg bg-error-container/20 border border-error/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-lg" data-icon="warning">warning</span>
+</div>
+<h3 class="font-title-card text-title-card text-on-surface">Pause Agent Execution?</h3>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer text-lg" data-icon="close">close</span>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container-low border border-outline-variant font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-secondary">
+<span>Target:</span>
+<span class="text-on-surface font-code-bold">accounts-agent [v2.4.1]</span>
+</div>
+<div class="flex justify-between text-secondary">
+<span>Interception Rule:</span>
+<span class="text-primary">MANUAL_OVERRIDE_EMERGENCY</span>
+</div>
+</div>
+<p class="font-body-default text-body-default text-on-surface-variant">
+              Emergency pausing immediately halts all inbound tool calls for <span class="text-on-surface font-semibold">accounts-agent [v2.4.1]</span>. Any pending in-flight transactions will fail closed at the gateway. Deterministic state will freeze until manual resumption by SecOps.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant flex items-center justify-end gap-3">
+<button class="px-4 py-2 rounded-lg border border-outline-variant text-on-surface bg-surface-container-high hover:bg-surface-variant font-caption-medium text-caption-medium transition-colors">
+              Cancel
+            </button>
+<button class="px-4 py-2 rounded-lg border border-error text-error bg-error-container/20 hover:bg-error-container/40 font-caption-medium text-caption-medium flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-base" data-icon="pause_circle">pause_circle</span>
+<span>Pause Agent Immediately</span>
+</button>
+</div>
+</div>
+<!-- Modal B: Revoke Approval APR-0002 -->
+<div class="rounded-xl bg-surface-container border border-outline-variant p-6 shadow-2xl relative flex flex-col justify-between">
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div class="flex items-center gap-2.5 text-error">
+<div class="p-1.5 rounded-lg bg-error-container/20 border border-error/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-lg" data-icon="security">security</span>
+</div>
+<h3 class="font-title-card text-title-card text-on-surface">Revoke Approval APR-0002?</h3>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer text-lg" data-icon="close">close</span>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container-low border border-outline-variant font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between text-secondary">
+<span>Interception ID:</span>
+<span class="text-on-surface">#int-5521-b4</span>
+</div>
+<div class="flex justify-between text-secondary">
+<span>Tool Target:</span>
+<span class="text-primary font-code-bold">payments.send (₹5,000 to Supplier A)</span>
+</div>
+<div class="flex justify-between text-secondary">
+<span>Signature Window:</span>
+<span class="text-error font-medium">06:40 remaining</span>
+</div>
+</div>
+<p class="font-body-default text-body-default text-on-surface-variant">
+              Revoking this approval immediately invalidates the cryptographic HMAC signature token (validity 06:40 left). The target tool <span class="text-on-surface font-semibold">payments.send (₹5,000 to Supplier A)</span> will be permanently blocked from execution and recorded to the Merkle audit ledger as tombstoned.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-outline-variant flex items-center justify-end gap-3">
+<button class="px-4 py-2 rounded-lg border border-outline-variant text-on-surface bg-surface-container-high hover:bg-surface-variant font-caption-medium text-caption-medium transition-colors">
+              Cancel
+            </button>
+<button class="px-4 py-2 rounded-lg border border-error text-error bg-error-container/20 hover:bg-error-container/40 font-caption-medium text-caption-medium flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-base" data-icon="cancel">cancel</span>
+<span>Revoke &amp; Invalidate Token</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BOTTOM NAVBAR (Shared Component Semantic Anchor) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 border-t border-outline-variant bg-surface-container-lowest pb-safe md:hidden">
+<a class="flex flex-col items-center justify-center text-primary font-caption-medium text-caption-medium gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="stream">stream</span>
+<span>Live Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span>Approvals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="policy">policy</span>
+<span>Policies</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history_toggle_off">history_toggle_off</span>
+<span>Audit Log</span>
+</a>
+</nav>
+</body></html>

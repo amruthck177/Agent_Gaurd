@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentGuard — Sovereign Gateway Demo Panel</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed-variant": "#604100",
+            "surface-container": "#19202e",
+            "on-primary-fixed": "#281900",
+            "secondary-fixed-dim": "#bbc6e4",
+            "on-background": "#dce2f6",
+            "on-tertiary-fixed-variant": "#3b4662",
+            "surface": "#0c1321",
+            "outline-variant": "#4f4537",
+            "on-tertiary-container": "#293550",
+            "surface-container-high": "#232a39",
+            "on-secondary-fixed-variant": "#3c475f",
+            "on-surface": "#dce2f6",
+            "primary": "#f4bd61",
+            "secondary-container": "#3e4962",
+            "surface-variant": "#2e3544",
+            "secondary": "#bbc6e4",
+            "on-secondary-container": "#adb8d6",
+            "tertiary-fixed": "#d8e2ff",
+            "error-container": "#93000a",
+            "tertiary-fixed-dim": "#bac6e7",
+            "surface-bright": "#323949",
+            "surface-tint": "#f4bd61",
+            "primary-fixed": "#ffdead",
+            "on-secondary": "#253048",
+            "on-secondary-fixed": "#101b32",
+            "inverse-on-surface": "#2a3040",
+            "surface-container-highest": "#2e3544",
+            "on-error-container": "#ffdad6",
+            "surface-dim": "#0c1321",
+            "inverse-primary": "#7e5700",
+            "tertiary-container": "#929ebd",
+            "on-tertiary-fixed": "#0e1b34",
+            "on-error": "#690005",
+            "tertiary": "#bac6e7",
+            "on-primary-container": "#4a3100",
+            "surface-container-low": "#151b2a",
+            "on-tertiary": "#24304a",
+            "background": "#0c1321",
+            "secondary-fixed": "#d8e2ff",
+            "outline": "#9c8f7e",
+            "error": "#ffb4ab",
+            "primary-fixed-dim": "#f4bd61",
+            "surface-container-lowest": "#070e1c",
+            "primary-container": "#c8963e",
+            "on-surface-variant": "#d3c4b2",
+            "on-primary": "#432c00",
+            "inverse-surface": "#dce2f6"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "margin-desktop": "2rem",
+            "gutter": "1rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "gutter-desktop": "1.5rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "stat-lg": ["Inter", "sans-serif"],
+            "headline-page": ["Inter", "sans-serif"],
+            "title-card": ["Inter", "sans-serif"],
+            "body-default": ["Inter", "sans-serif"],
+            "body-semibold": ["Inter", "sans-serif"],
+            "headline-page-mobile": ["Inter", "sans-serif"],
+            "code-bold": ["JetBrains Mono", "monospace"],
+            "caption-medium": ["Inter", "sans-serif"],
+            "code-default": ["JetBrains Mono", "monospace"],
+            "caption": ["Inter", "sans-serif"],
+            "code-sm": ["JetBrains Mono", "monospace"]
+          },
+          "fontSize": {
+            "stat-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-page": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "title-card": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "body-default": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-semibold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "headline-page-mobile": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "code-bold": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "caption-medium": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "code-default": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "caption": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "code-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Stage Custom Scrollers and Micro-pulse */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070e1c;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #24304a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4f4537;
+    }
+    @keyframes subtlePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.008); }
+    }
+    .stage-pulse {
+      animation: subtlePulse 2.8s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-default min-h-screen flex flex-col selection:bg-primary-container selection:text-surface-container-lowest overflow-x-hidden pb-20">
+<!-- ==================== TOP REASSURANCE STAGE BANNER ==================== -->
+<aside aria-label="System Notice" class="w-full bg-surface-container-lowest border-b border-[#24304A] px-4 py-2 flex items-center justify-between text-xs sm:text-sm text-on-surface-variant font-code-default">
+<div class="flex items-center gap-2 max-w-7xl mx-auto w-full">
+<span class="inline-flex items-center justify-center text-primary" data-icon="lock">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+</span>
+<span class="font-code-bold text-primary tracking-wide">Deterministic Boundary:</span>
+<span class="text-on-surface truncate">Enforcement runs in code at the gateway, outside the AI. Errors fail closed. Zero LLM prompt-injection bypass possible.</span>
+<div class="ml-auto hidden lg:flex items-center gap-3 text-secondary">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#2E9E5B] inline-block animate-ping"></span> 10/10 Invariants Active</span>
+<span class="text-outline-variant">|</span>
+<span class="font-code-sm text-primary">STAGE READY: HDMI 4K</span>
+</div>
+</div>
+</aside>
+<!-- ==================== TOP APP BAR (SHARED COMPONENT DERIVED) ==================== -->
+<header class="flex justify-between items-center w-full px-4 md:px-8 h-16 border-b border-outline-variant bg-surface-dim sticky top-0 z-40">
+<!-- Brand Anchor -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl font-bold" data-icon="shield">shield</span>
+<div>
+<span class="font-headline-page-mobile text-headline-page-mobile font-bold text-primary tracking-tight block leading-none">AgentGuard</span>
+<span class="font-code-sm text-[10px] tracking-wider text-outline block mt-0.5">SOVEREIGN GATEWAY / STAGE DEMO MODE</span>
+</div>
+</div>
+<div class="hidden sm:block h-6 w-px bg-[#24304A] mx-2"></div>
+<!-- Enclave selector -->
+<div class="hidden sm:flex items-center gap-2 bg-surface-container-low border border-[#24304A] px-3 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="memory">memory</span>
+<span class="font-code-bold text-xs text-on-surface">accounts-agent</span>
+<span class="font-code-sm text-[11px] text-primary bg-[#c8963e]/10 border border-[#c8963e]/30 px-1.5 py-0.2 rounded">v2.4.1 (Demo Scripted)</span>
+</div>
+</div>
+<!-- Stage Telemetry & Emergency Trigger -->
+<div class="flex items-center gap-3">
+<div class="hidden md:flex items-center gap-3 mr-2 font-code-sm">
+<div class="px-2.5 py-1 bg-[#121B2E] border border-[#24304A] rounded text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#2E9E5B]"></span>
+<span>Wasm Interceptor: <strong>0.38ms</strong></span>
+</div>
+<div class="px-2.5 py-1 bg-[#121B2E] border border-[#24304A] rounded text-[#2E9E5B] border-[#2E9E5B]/40 font-semibold">
+          ZERO BYPASS RECORD
+        </div>
+</div>
+<button class="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-error bg-error-container/30 border border-error/40 rounded-lg hover:bg-error-container/50 transition-colors duration-150 active:scale-95" title="Halt all simulated transactions" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="pause_circle">pause_circle</span>
+<span class="hidden sm:inline">Emergency Pause</span>
+</button>
+</div>
+</header>
+<!-- ==================== MAIN WORKSPACE SHELL ==================== -->
+<div class="flex-1 flex overflow-hidden">
+<!-- DESKTOP LEFT CONSOLE SIDEBAR (Fixed Nav Rail) -->
+<aside aria-label="Console Navigation" class="w-60 bg-surface-container-lowest border-r border-[#24304A] shrink-0 hidden md:flex flex-col justify-between py-4">
+<div class="space-y-6 px-3">
+<div>
+<div class="px-3 pb-2 text-[11px] font-code-sm text-outline uppercase tracking-wider">Gateway Modules</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary hover:bg-surface-container-high transition-colors font-body-semibold text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="stream">stream</span>
+<span>Live Feed</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary hover:bg-surface-container-high transition-colors font-body-semibold text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span>Approvals</span>
+<span class="ml-auto text-xs px-1.5 py-0.5 rounded bg-surface-variant text-on-surface">3</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary hover:bg-surface-container-high transition-colors font-body-semibold text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="policy">policy</span>
+<span>Policies</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary hover:bg-surface-container-high transition-colors font-body-semibold text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="history_toggle_off">history_toggle_off</span>
+<span>Audit Log</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary hover:bg-surface-container-high transition-colors font-body-semibold text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="fact_check">fact_check</span>
+<span>Test Results</span>
+</a>
+</nav>
+</div>
+<div>
+<div class="px-3 pb-2 text-[11px] font-code-sm text-outline uppercase tracking-wider">Executive Presentation</div>
+<!-- ACTIVE TAB: Demo Panel -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-surface-container border border-primary-container/40 text-primary font-body-semibold text-sm shadow-[0_0_15px_rgba(200,150,62,0.12)]" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="slideshow">slideshow</span>
+<span class="font-bold">Demo Panel</span>
+</div>
+<span class="text-[10px] font-code-bold uppercase bg-primary-container text-on-primary-container px-2 py-0.5 rounded">LIVE</span>
+</a>
+</div>
+</div>
+<!-- Sovereign Guarantee Footnote in Rail -->
+<div class="px-4 py-3 mx-3 bg-[#121B2E] border border-[#24304A] rounded-xl text-xs space-y-1.5">
+<div class="flex items-center gap-1.5 text-primary font-code-bold text-[11px]">
+<span class="material-symbols-outlined text-[14px]" data-icon="gavel">gavel</span>
+<span>Sovereignty Contract</span>
+</div>
+<p class="text-on-surface-variant text-[11px] leading-tight">Cryptographic nonces &amp; HMAC checks execute in deterministic rust boundary prior to LLM receipt.</p>
+</div>
+</aside>
+<!-- CENTER & RIGHT STAGE VIEWPORT (Full Screen Stage Optimized) -->
+<main class="flex-1 overflow-y-auto bg-surface p-4 sm:p-6 lg:p-8 space-y-6">
+<!-- ==================== STAGE HERO & CONTROLS ==================== -->
+<section class="bg-surface-container-low border border-[#24304A] rounded-xl p-5 lg:p-7 relative overflow-hidden">
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+<div class="space-y-2 max-w-3xl">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-code-bold tracking-wider uppercase bg-[#C8963E]/20 text-primary border border-primary/30">
+                STAGE DEMONSTRATION ENGINE
+              </span>
+<span class="text-on-surface-variant font-code-sm text-xs">Deterministic Invariants v2.4</span>
+</div>
+<h1 class="text-[28px] sm:text-[34px] leading-tight font-bold text-on-surface tracking-tight font-headline-page">
+              Deterministic Security Invariants Demo
+            </h1>
+<p class="text-base sm:text-lg text-on-surface-variant leading-relaxed">
+              Showcase deterministic zero-bypass gateway guarantees for live audiences. When autonomous AI agents hallucinate, modify instructions, or encounter adversary prompt injection, execution <span class="text-on-surface font-semibold underline decoration-primary decoration-2">fails closed</span> before reaching enterprise settlement tools.
+            </p>
+</div>
+<!-- PRIMARY STAGE ACTION BUTTON CLUSTER -->
+<div class="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
+<!-- Run Full Story (56px Height Glowing Gold Button) -->
+<button class="h-14 px-8 rounded-lg bg-primary-container hover:bg-[#DCAB54] active:bg-[#B58432] text-on-primary-container font-headline-page font-bold text-lg flex items-center justify-center gap-3 transition-all duration-150 shadow-[0_4px_24px_rgba(200,150,62,0.35)] active:scale-95 group" id="btnRunFullStory">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform" data-icon="play_arrow">play_arrow</span>
+<span>Run the full story</span>
+<span class="text-xs bg-black/25 px-2 py-0.5 rounded font-code-bold tracking-wider ml-1 text-on-primary-container border border-black/20">[Space]</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="flex-1 h-10 px-4 rounded-lg bg-transparent border border-[#24304A] hover:bg-[#18233A] text-on-surface font-body-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="skip_next">skip_next</span>
+<span>Step Forward (Next)</span>
+<span class="text-[10px] font-code-default text-outline">[N]</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-transparent border border-[#24304A] hover:bg-[#18233A] text-secondary font-body-semibold text-sm flex items-center justify-center" title="Pause Sequence">
+<span class="material-symbols-outlined text-[18px]" data-icon="pause">pause</span>
+</button>
+</div>
+</div>
+</div>
+<!-- STAGE PROGRESS / STEP CAPTION CALLOUT BANNER -->
+<div class="mt-6 pt-5 border-t border-[#24304A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="flex h-3.5 w-3.5 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-primary-container"></span>
+</span>
+<div class="font-code-bold text-base text-primary">
+              Step 5 of 8: <span class="text-on-surface font-body-semibold">Agent attempts unapproved deviation to Mehta Ice (Supplier B)</span>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-[#D64545]/15 border border-[#D64545]/40 text-[#ffb4ab] px-3.5 py-1.5 rounded-full font-code-sm text-xs font-semibold">
+<span class="material-symbols-outlined text-[16px] text-[#D64545]" data-icon="shield">shield</span>
+<span>RESULT: FAIL-CLOSED BLOCKED</span>
+</div>
+</div>
+</section>
+<!-- ==================== MAIN PRESENTATION SPLIT: BENTO GRID + TELEMETRY ==================== -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+<!-- ==================== LEFT 8-COLS: LARGE SCENARIO CARDS GRID ==================== -->
+<div class="xl:col-span-8 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="grid_view">grid_view</span>
+<h2 class="text-lg font-bold font-headline-page text-on-surface tracking-tight">Stage Invariant Test Matrix</h2>
+<span class="text-xs font-code-bold text-outline bg-surface-container px-2 py-0.5 rounded border border-[#24304A]">10 Scenarios</span>
+</div>
+<span class="text-xs font-code-default text-outline">Click card to simulate isolated trigger</span>
+</div>
+<!-- Scenario Cards Grid (High contrast, stage legible 18px / 14px typography) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- RUN 1: ALLOW -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#2E9E5B]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A] relative overflow-hidden">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 01</div>
+<!-- Decision Chip ALLOW -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(46,158,91,0.14)] border border-[rgba(46,158,91,0.4)] text-[#2E9E5B]">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span>
+                    ALLOW
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  Valid approved payment
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  Token validated, HMAC matches approval envelope, tool allowed. Deterministic clearance granted in 0.31ms.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>Nonce: 0x8f2a • ₹5,000</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- RUN 2: BLOCK (Divergence) -->
+<div class="bg-[#121B2E] border-2 border-[#D64545]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer bg-[#18233A] relative shadow-[0_0_20px_rgba(214,69,69,0.15)]">
+<div class="absolute top-0 right-0 w-2 h-full bg-[#D64545]"></div>
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="font-code-bold text-sm text-[#D64545]">RUN 02</span>
+<span class="text-[10px] bg-[#D64545]/20 text-[#ffb4ab] px-1.5 py-0.2 rounded font-code-bold uppercase">CURRENT STAGE STEP</span>
+</div>
+<!-- Decision Chip BLOCK -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(214,69,69,0.15)] border border-[rgba(214,69,69,0.45)] text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+                    BLOCK
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface">
+                  Supplier A approved, Supplier B attempted
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  Payload divergence caught at gateway. Agent claimed Mehta Ice was canonical subsidiary. Zero token issued.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span class="text-[#ffb4ab]">Target mismatch: supp-b-divergence</span>
+<span class="text-primary font-code-bold flex items-center gap-0.5">
+                  Inspect Diff <span class="material-symbols-outlined text-[13px]" data-icon="visibility">visibility</span>
+</span>
+</div>
+</div>
+<!-- RUN 3: BLOCK (Amount changed) -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#D64545]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A]">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 03</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(214,69,69,0.12)] border border-[rgba(214,69,69,0.35)] text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+                    BLOCK
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  Amount changed (Inflation attack)
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  Post-approval inflation ₹5,000 to ₹50,000 intercepted. Cryptographic parameter hash mismatch detected immediately.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>Delta: +₹45,000 (Tampered)</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- RUN 4: BLOCK (Expired token) -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#D64545]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A]">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 04</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(214,69,69,0.12)] border border-[rgba(214,69,69,0.35)] text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+                    BLOCK
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  Expired authorization token
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  Signed token presented at 10m 02s (&gt;10m strict TTL). Enclave system clock rejects stale cryptographic grant.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>TTL Expired (+2.1s drift)</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- RUN 5: BLOCK (Revoked approval) -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#D64545]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A]">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 05</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(214,69,69,0.12)] border border-[rgba(214,69,69,0.35)] text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+                    BLOCK
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  Revoked approval attempt
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  Admin invalidated token presented for execution. Gateway synchronous tombstone register blocks execution.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>Tombstone: 0x9c31-REVOKED</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- RUN 6: BLOCK (Read-only agent write) -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#D64545]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A]">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 06</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(214,69,69,0.12)] border border-[rgba(214,69,69,0.35)] text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+                    BLOCK
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  Read-only agent privilege write
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  reader-agent invoking database.write. Role Boundary contract halts unprivileged capability invocation instantly.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>Role Violation: SCOPE_READONLY</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- RUN 7: BLOCK (DROP TABLE Injection) -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#D64545]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A]">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 07</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(214,69,69,0.12)] border border-[rgba(214,69,69,0.35)] text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+                    BLOCK
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  DROP TABLE SQL injection
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  SQL AST parser catches destructive command without WHERE clause hidden in parameterized prompt payload.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>AST: DDL_DROP_PREVENTED</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- RUN 8: ASK HUMAN (Threshold Intercept) -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#F2B705]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A]">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 08</div>
+<!-- Decision Chip ASK HUMAN -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(242,183,5,0.12)] border border-[rgba(242,183,5,0.35)] text-[#F2B705]">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                    ASK HUMAN
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  Payment above ₹10,000 threshold
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  Attempted transfer ₹45,000 exceeds autonomous limits. Intercepted for mandatory dual-officer biometric sign-off.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>Threshold Rule: POLICY_FIN_04</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- RUN 9: BLOCK (Replay Attack) -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#D64545]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A]">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 09</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(214,69,69,0.12)] border border-[rgba(214,69,69,0.35)] text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+                    BLOCK
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  Replay attack with consumed nonce
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  Duplicate cryptographic nonce 0x8f2a re-submitted. Zero-knowledge nonce accumulator marks duplicate attempt.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>Nonce: 0x8f2a (Already Spent)</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- RUN 10: BLOCK / FAIL-CLOSED (Gateway Down) -->
+<div class="bg-[#121B2E] border border-[#24304A] hover:border-[#D64545]/60 rounded-xl p-4 transition-all duration-150 flex flex-col justify-between group cursor-pointer hover:bg-[#18233A]">
+<div class="space-y-2">
+<div class="flex items-start justify-between gap-2">
+<div class="font-code-bold text-sm text-primary">RUN 10</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-code-bold bg-[rgba(214,69,69,0.12)] border border-[rgba(214,69,69,0.35)] text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+                    FAIL-CLOSED
+                  </span>
+</div>
+<h3 class="text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  Simulated gateway crash / disconnect
+                </h3>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                  Simulated network isolation halts all execution. Without cryptographic gateway ACK, zero money or writes move.
+                </p>
+</div>
+<div class="mt-4 pt-3 border-t border-[#24304A] flex items-center justify-between text-xs font-code-sm text-outline">
+<span>State: HARD_FAIL_TERMINATE</span>
+<span class="text-primary font-code-bold group-hover:underline flex items-center gap-0.5">
+                  Simulate <span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ==================== RIGHT 4-COLS: LIVE STAGE TELEMETRY & PARAMETER INSPECTOR ==================== -->
+<div class="xl:col-span-4 space-y-5">
+<!-- CRUCIAL REASSURANCE METRIC: ZERO MONEY LEAKED -->
+<div class="bg-[#121B2E] border-2 border-[#2E9E5B] rounded-xl p-5 shadow-[0_0_25px_rgba(46,158,91,0.15)] flex items-center justify-between">
+<div>
+<div class="text-xs font-code-bold uppercase tracking-wider text-[#2E9E5B] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]" data-icon="verified">verified</span>
+                Audience Reassurance Metric
+              </div>
+<div class="text-2xl sm:text-3xl font-bold font-stat-lg text-[#2E9E5B] mt-1">
+                Payment tool executions: 0
+              </div>
+<p class="text-xs text-on-surface-variant mt-0.5">
+                Zero unauthorized rupees, tokens, or database writes dispatched.
+              </p>
+</div>
+<div class="h-12 w-12 rounded-full bg-[#2E9E5B]/10 border border-[#2E9E5B]/40 flex items-center justify-center text-[#2E9E5B] shrink-0">
+<span class="material-symbols-outlined text-2xl" data-icon="lock_open_right">lock</span>
+</div>
+</div>
+<!-- APPROVED VS ATTEMPTED PARAMETER INSPECTOR BLOCK -->
+<div class="bg-[#121B2E] border border-[#24304A] rounded-xl p-5 space-y-4">
+<div class="flex items-center justify-between border-b border-[#24304A] pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="compare_arrows">compare_arrows</span>
+<span class="font-bold text-sm font-headline-page text-on-surface">Parameter Comparison Inspector</span>
+</div>
+<span class="text-[11px] font-code-sm bg-surface-container px-2 py-0.5 rounded text-primary">Run 02 Active</span>
+</div>
+<!-- Approved Parameters Column -->
+<div class="bg-[#0c1321] border border-[#24304A] rounded-lg p-3 space-y-1.5 text-xs font-code-default">
+<div class="flex items-center justify-between text-[#2E9E5B] font-code-bold text-[11px]">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+                  APPROVED BY OFFICER
+                </span>
+<span>SIGNATURE: VALID</span>
+</div>
+<div class="text-on-surface-variant flex justify-between">
+<span>Recipient:</span>
+<span class="text-on-surface font-semibold">Supplier A (supp-a@icici)</span>
+</div>
+<div class="text-on-surface-variant flex justify-between">
+<span>Max Amount:</span>
+<span class="text-on-surface font-semibold">₹5,000.00</span>
+</div>
+<div class="text-on-surface-variant flex justify-between">
+<span>Nonce:</span>
+<span class="text-on-surface">0x8f2a9914bc</span>
+</div>
+</div>
+<!-- Attempted Parameters Column with Divergence Callout -->
+<div class="bg-[#1e1116] border border-[#D64545]/60 rounded-lg p-3 space-y-1.5 text-xs font-code-default relative">
+<div class="flex items-center justify-between text-[#ffb4ab] font-code-bold text-[11px]">
+<span class="flex items-center gap-1 text-[#D64545]">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                  AI AGENT ATTEMPTED
+                </span>
+<span class="text-[#D64545] font-bold">DIVERGENCE!</span>
+</div>
+<div class="text-on-surface-variant flex justify-between items-center">
+<span>Recipient:</span>
+<span class="text-[#ffb4ab] font-bold bg-[#D64545]/20 px-1 py-0.5 rounded border border-[#D64545]/30">Mehta Ice (UNAPPROVED)</span>
+</div>
+<div class="text-on-surface-variant flex justify-between items-center">
+<span>Attempted Amount:</span>
+<span class="text-[#ffb4ab] font-bold bg-[#D64545]/20 px-1 py-0.5 rounded border border-[#D64545]/30">₹80,000.00 (+1,500%)</span>
+</div>
+<div class="text-on-surface-variant flex justify-between">
+<span>Agent Reason:</span>
+<span class="text-on-surface-variant truncate max-w-[150px]">"Prompt re-route instruction"</span>
+</div>
+</div>
+<!-- Gateway Verdict -->
+<div class="p-3 bg-[#151b2a] border border-[#24304A] rounded-lg text-xs space-y-1">
+<div class="flex items-center justify-between font-code-bold">
+<span class="text-outline uppercase text-[10px]">Deterministic Verdict</span>
+<span class="text-primary">Latency: 0.38ms</span>
+</div>
+<p class="text-on-surface font-body-semibold">
+                Intercepted &amp; Blocked at boundary. The agent received <code class="text-error font-code-sm">ERR_PARAM_MISMATCH</code>. Zero outbound API calls allowed.
+              </p>
+</div>
+</div>
+<!-- LIVE MINI FEED (3 Latest Real-Time Decisions) -->
+<div class="bg-[#121B2E] border border-[#24304A] rounded-xl p-5 space-y-3">
+<div class="flex items-center justify-between border-b border-[#24304A] pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="history">history</span>
+<span class="font-bold text-sm font-headline-page text-on-surface">Live Gateway Telemetry Feed</span>
+</div>
+<span class="flex items-center gap-1 text-[11px] font-code-sm text-[#2E9E5B]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#2E9E5B] animate-pulse"></span>
+                Streaming
+              </span>
+</div>
+<div class="space-y-2 font-code-sm text-xs">
+<!-- Item 1044 BLOCK -->
+<div class="p-2.5 rounded-lg bg-[#0c1321] border border-[#24304A] hover:border-[#D64545]/40 transition-colors flex items-center justify-between">
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-bold text-on-surface">#1044</span>
+<span class="text-secondary font-code-default">payments.send</span>
+<span class="text-[10px] text-outline">0.38ms</span>
+</div>
+<div class="text-[11px] text-on-surface-variant truncate max-w-[200px]">
+                    accounts-agent • <span class="text-[#ffb4ab]">Rule: SUPPLIER_ALLOWLIST</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D64545]/15 border border-[#D64545]/40 text-[#D64545]">
+                  BLOCK
+                </span>
+</div>
+<!-- Item 1043 ALLOW -->
+<div class="p-2.5 rounded-lg bg-[#0c1321] border border-[#24304A] hover:border-[#2E9E5B]/40 transition-colors flex items-center justify-between">
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-bold text-on-surface">#1043</span>
+<span class="text-secondary font-code-default">payments.send</span>
+<span class="text-[10px] text-outline">0.31ms</span>
+</div>
+<div class="text-[11px] text-on-surface-variant truncate max-w-[200px]">
+                    accounts-agent • <span class="text-[#2E9E5B]">Rule: HMAC_ENVELOPE_OK</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2E9E5B]/15 border border-[#2E9E5B]/40 text-[#2E9E5B]">
+                  ALLOW
+                </span>
+</div>
+<!-- Item 1042 ASK HUMAN -->
+<div class="p-2.5 rounded-lg bg-[#0c1321] border border-[#24304A] hover:border-[#F2B705]/40 transition-colors flex items-center justify-between">
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="font-bold text-on-surface">#1042</span>
+<span class="text-secondary font-code-default">ledger.reconcile</span>
+<span class="text-[10px] text-outline">0.42ms</span>
+</div>
+<div class="text-[11px] text-on-surface-variant truncate max-w-[200px]">
+                    auditor-agent • <span class="text-[#F2B705]">Rule: ESCROW_FLAG</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F2B705]/15 border border-[#F2B705]/40 text-[#F2B705]">
+                  ASK HUMAN
+                </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- ==================== BOTTOM STAGE CONTROL DOCK / BAR (Fixed) ==================== -->
+<footer class="fixed bottom-0 left-0 w-full z-50 bg-[#070e1c] border-t border-[#24304A] px-4 md:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-[0_-8px_24px_rgba(0,0,0,0.6)]">
+<!-- Left Status Pill -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 bg-[#121B2E] border border-[#24304A] px-3.5 py-1.5 rounded-full font-code-bold text-xs text-on-surface">
+<span class="w-2.5 h-2.5 rounded-full bg-[#2E9E5B] animate-pulse"></span>
+<span>Agent mode: <span class="text-primary">Scripted (offline-safe)</span></span>
+</div>
+<div class="hidden lg:flex items-center gap-1.5 text-xs text-on-surface-variant font-code-sm">
+<span class="material-symbols-outlined text-[15px] text-primary" data-icon="speed">speed</span>
+<span>Gateway latency: <strong class="text-on-surface">0.38ms</strong> (deterministic Wasm boundary)</span>
+</div>
+</div>
+<!-- Center/Right Action Buttons for Stage Speaker -->
+<div class="flex items-center gap-2.5">
+<!-- Reset Demo Data -->
+<button class="px-3.5 py-2 rounded-lg bg-transparent border border-[#24304A] hover:bg-[#18233A] text-on-surface font-body-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="refresh">refresh</span>
+<span>Reset demo data</span>
+</button>
+<!-- Simulate Tamper Button (Prominent Red Outline) -->
+<button class="px-3.5 py-2 rounded-lg bg-transparent border border-[rgba(214,69,69,0.5)] hover:bg-[rgba(214,69,69,0.15)] text-[#ffb4ab] font-body-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-[#D64545]" data-icon="warning">warning</span>
+<span>Simulate tamper</span>
+</button>
+<!-- Verify Integrity Button (Solid Gold) -->
+<button class="px-4 py-2 rounded-lg bg-primary-container hover:bg-[#DCAB54] active:bg-[#B58432] text-on-primary-container font-headline-page font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-colors shadow-[0_2px_12px_rgba(200,150,62,0.25)] active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="shield">shield</span>
+<span>Verify integrity</span>
+</button>
+</div>
+</footer>
+<!-- ==================== MOBILE BOTTOM NAVIGATION (SHARED COMPONENT DERIVED) ==================== -->
+<nav class="md:hidden fixed bottom-14 left-0 w-full z-40 bg-surface-container-lowest border-t border-outline-variant flex justify-around items-center px-2 py-2">
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="stream">stream</span>
+<span>Live Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="verified_user">verified_user</span>
+<span>Approvals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="policy">policy</span>
+<span>Policies</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-caption-medium text-caption-medium gap-1" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="history_toggle_off">history_toggle_off</span>
+<span>Audit Log</span>
+</a>
+</nav>
+<!-- Interactive Demo Micro-script for Stage Keyboard Shortcut -->
+<script>
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && e.target === document.body) {
+        e.preventDefault();
+        const btn = document.getElementById('btnRunFullStory');
+        if (btn) {
+          btn.classList.add('scale-95');
+          setTimeout(() => btn.classList.remove('scale-95'), 150);
+          console.log('[AgentGuard] Stage Story Sequence Triggered via [Space]');
+        }
+      }
+    });
+  </script>
+</body></html>

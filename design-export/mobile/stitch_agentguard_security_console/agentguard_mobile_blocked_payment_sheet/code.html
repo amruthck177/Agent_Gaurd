@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>AgentGuard — Blocked Payment Inspection</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#f4bd61",
+            "surface-tint": "#f4bd61",
+            "error": "#ffb4ab",
+            "on-tertiary": "#24304a",
+            "on-primary-fixed": "#281900",
+            "secondary-fixed": "#d8e2ff",
+            "surface-container-high": "#232a39",
+            "surface-container-lowest": "#070e1c",
+            "on-tertiary-fixed-variant": "#3b4662",
+            "on-background": "#dce2f6",
+            "on-surface": "#dce2f6",
+            "primary-container": "#c8963e",
+            "secondary-container": "#3e4962",
+            "on-error": "#690005",
+            "on-surface-variant": "#d3c4b2",
+            "error-container": "#93000a",
+            "tertiary": "#bac6e7",
+            "on-error-container": "#ffdad6",
+            "secondary": "#bbc6e4",
+            "tertiary-fixed": "#d8e2ff",
+            "on-primary-container": "#4a3100",
+            "outline": "#9c8f7e",
+            "surface-container-highest": "#2e3544",
+            "on-secondary-fixed-variant": "#3c475f",
+            "on-secondary-container": "#adb8d6",
+            "inverse-primary": "#7e5700",
+            "on-primary": "#432c00",
+            "surface-container": "#19202e",
+            "tertiary-fixed-dim": "#bac6e7",
+            "surface-dim": "#0c1321",
+            "on-secondary": "#253048",
+            "on-primary-fixed-variant": "#604100",
+            "on-secondary-fixed": "#101b32",
+            "on-tertiary-fixed": "#0e1b34",
+            "primary": "#f4bd61",
+            "background": "#0c1321",
+            "inverse-surface": "#dce2f6",
+            "primary-fixed": "#ffdead",
+            "surface-variant": "#2e3544",
+            "inverse-on-surface": "#2a3040",
+            "surface-container-low": "#151b2a",
+            "on-tertiary-container": "#293550",
+            "surface": "#0c1321",
+            "outline-variant": "#4f4537",
+            "surface-bright": "#323949",
+            "tertiary-container": "#929ebd",
+            "secondary-fixed-dim": "#bbc6e4"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter-desktop": "1.5rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter": "1rem",
+            "space-xl": "2rem",
+            "margin-desktop": "2rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "caption-medium": ["Inter"],
+            "title-card": ["Inter"],
+            "caption": ["Inter"],
+            "body-default": ["Inter"],
+            "headline-page": ["Inter"],
+            "code-default": ["JetBrains Mono"],
+            "body-semibold": ["Inter"],
+            "stat-lg": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "code-bold": ["JetBrains Mono"],
+            "headline-page-mobile": ["Inter"]
+          },
+          "fontSize": {
+            "caption-medium": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "title-card": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "caption": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-default": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-page": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "code-default": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-semibold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "stat-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "code-bold": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "headline-page-mobile": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      vertical-align: middle;
+    }
+    /* Hide scrollbars for clean mission control viewport */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface antialiased font-body-default min-h-screen flex justify-center selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobile Viewport Frame (390px emulation container) -->
+<div class="relative w-full max-w-[390px] min-h-screen bg-surface-container-lowest flex flex-col justify-end overflow-hidden shadow-2xl">
+<!-- Dimmed Under-Backdrop Simulating App Underneath -->
+<div class="absolute inset-x-0 top-0 h-16 bg-surface-container-lowest/80 backdrop-blur-sm z-0 flex items-center justify-between px-4 opacity-40 pointer-events-none">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline-variant">shield</span>
+<span class="font-headline-page-mobile text-headline-page-mobile font-bold text-outline-variant">AgentGuard</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container border border-outline-variant/30"></div>
+</div>
+<!-- Full-Height Bottom Sheet Container -->
+<div class="relative z-10 w-full h-[96vh] bg-surface-dim border-t border-outline-variant rounded-t-2xl flex flex-col shadow-[0_-8px_32px_rgba(0,0,0,0.8)] overflow-hidden">
+<!-- Top Drag Bar & Sovereign Shield Accent -->
+<div class="w-full flex flex-col items-center pt-2 pb-1 bg-surface-dim shrink-0">
+<div class="w-12 h-1.5 rounded-full bg-outline-variant/80"></div>
+</div>
+<!-- Modal Header -->
+<div class="px-4 pb-3 border-b border-outline-variant bg-surface-dim shrink-0">
+<div class="flex items-center justify-between gap-2 mb-2">
+<!-- BLOCK Chip (Strict Semantics) -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-error-container/40 border border-error/40 text-error">
+<span class="material-symbols-outlined text-[14px]">shield</span>
+<span class="font-code-bold text-code-sm tracking-wider">BLOCK</span>
+</div>
+<!-- Deterministic Close Action Button -->
+<button aria-label="Close inspection sheet" class="w-8 h-8 rounded-lg bg-surface-container-low border border-outline-variant/60 text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high transition-colors active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Title & Transaction Call -->
+<h1 class="font-code-bold text-headline-page-mobile text-on-surface tracking-tight mb-1 flex items-baseline gap-2">
+<span class="text-primary font-semibold">payments.send</span>
+<span class="font-headline-page-mobile text-on-surface font-bold">₹5,000</span>
+</h1>
+<!-- Subtitle & Context Telemetry -->
+<div class="flex items-center flex-wrap gap-x-2 gap-y-0.5 text-on-surface-variant font-code-sm text-code-sm">
+<span class="text-primary-fixed-dim">#int-8712-e9</span>
+<span>•</span>
+<span>11:41:18 UTC</span>
+<span>•</span>
+<span class="inline-flex items-center gap-1 text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+            accounts-agent [v2.4.1]
+          </span>
+</div>
+</div>
+<!-- Scrollable Inspector Well -->
+<div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar">
+<!-- SECTION 1: Gateway Verdict ("Why") -->
+<div class="rounded-xl bg-surface-container-low border border-outline-variant p-3.5 space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant/50 pb-2">
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+<span class="font-title-card text-caption-medium tracking-wide">GATEWAY VERDICT</span>
+</div>
+<span class="font-code-sm text-[10px] text-error font-semibold bg-error-container/30 px-1.5 py-0.5 rounded border border-error/30">
+              ZERO TOLERANCE
+            </span>
+</div>
+<div class="space-y-2">
+<div>
+<span class="font-caption text-caption text-on-surface-variant block">Primary Violation</span>
+<p class="font-body-semibold text-body-default text-error mt-0.5">
+                Recipient changed after approval (expected Supplier A, agent requested Mehta Ice Suppliers).
+              </p>
+</div>
+<!-- Triggered Rule Badge -->
+<div class="flex items-start gap-2 p-2 rounded-lg bg-surface-dim border border-outline-variant/70">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5">lock</span>
+<div class="min-w-0">
+<span class="font-code-bold text-code-sm text-on-surface block">POL-PAY-002</span>
+<span class="font-caption text-caption text-on-surface-variant block">Recipient immutability constraint</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-1 border-t border-outline-variant/40 font-code-sm text-[11px]">
+<div>
+<span class="text-on-surface-variant block">Enforced By</span>
+<span class="text-on-surface font-code-default">Wasm Gateway Boundary</span>
+<span class="text-primary block text-[10px] font-medium">(0.38ms latency)</span>
+</div>
+<div>
+<span class="text-on-surface-variant block">Decision Mode</span>
+<span class="text-error font-semibold block">Fail-closed drop</span>
+<span class="text-on-surface-variant block text-[10px]">(no ledger write)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 2: Approved vs Attempted (Payload Parameter Verification) -->
+<div class="space-y-2">
+<div class="flex items-center justify-between px-1">
+<span class="font-caption-medium text-caption-medium text-on-surface-variant tracking-wider uppercase">
+              Payload Parameter Verification
+            </span>
+<span class="font-code-sm text-[11px] text-primary">Diff Delta</span>
+</div>
+<!-- Top Card: Approved Specification -->
+<div class="rounded-xl bg-surface-container-low border border-outline-variant p-3.5 space-y-2.5">
+<div class="flex items-center justify-between pb-1.5 border-b border-outline-variant/50">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-primary text-[16px]">verified</span>
+<span class="font-code-bold text-code-sm tracking-wider">APPROVED SPECIFICATION</span>
+</div>
+<span class="font-code-sm text-[10px] text-primary bg-primary-container/20 px-2 py-0.5 rounded border border-primary/30">
+                SecOps Keymaster
+              </span>
+</div>
+<div class="space-y-2 font-code-default text-code-sm">
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-[11px]">Authorized Recipient</span>
+<span class="text-on-surface font-semibold break-all">Supplier A (Acme Corp)</span>
+<span class="text-on-surface-variant text-[11px]">acc: HDFC0000281-987410294</span>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-1 border-t border-outline-variant/30">
+<div>
+<span class="text-on-surface-variant text-[11px] block">Approved Amount</span>
+<span class="text-on-surface font-semibold">₹5,000.00 INR</span>
+</div>
+<div>
+<span class="text-on-surface-variant text-[11px] block">Signature</span>
+<span class="text-primary text-[11px]">0x9e3f…08de (Valid)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Card: Attempted Execution (Directly underneath with mismatch focus) -->
+<div class="rounded-xl bg-surface-container border-2 border-error/50 p-3.5 space-y-2.5 relative overflow-hidden">
+<div class="absolute -right-12 -top-12 w-28 h-28 bg-error-container/20 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between pb-1.5 border-b border-error/30">
+<div class="flex items-center gap-1.5 text-error">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+<span class="font-code-bold text-code-sm tracking-wider">ATTEMPTED EXECUTION</span>
+</div>
+<span class="font-code-bold text-[10px] text-error bg-error-container/60 px-2 py-0.5 rounded border border-error">
+                MUTATION INTERCEPT
+              </span>
+</div>
+<!-- Recipient Highlighted in Red with Warning Pill -->
+<div class="p-2.5 rounded-lg bg-error-container/30 border border-error/40 space-y-1">
+<div class="flex items-center justify-between">
+<span class="text-error font-caption-medium text-[11px] uppercase tracking-wide">Target Recipient</span>
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-error text-on-error font-code-bold text-[10px]">
+                  MISMATCH
+                </span>
+</div>
+<p class="font-code-bold text-code-default text-error font-bold break-all">
+                Mehta Ice Suppliers
+              </p>
+<span class="text-error/80 font-code-sm text-[11px] block">acc: ICIC0001892-339182901</span>
+</div>
+<!-- Execution Meta Details -->
+<div class="space-y-1.5 pt-1 text-code-sm">
+<div class="flex justify-between items-center text-[12px]">
+<span class="text-on-surface-variant">Dispatched Amount:</span>
+<span class="text-on-surface font-code-bold">₹5,000.00 INR</span>
+</div>
+<div>
+<span class="text-on-surface-variant text-[11px] block">Agent Rationale Trace:</span>
+<p class="text-on-surface bg-surface-container-high/60 p-2 rounded border border-outline-variant/40 font-code-sm text-[11px] leading-relaxed mt-0.5">
+                  "Prompt injected routing alias for secondary warehouse provider."
+                </p>
+</div>
+<div class="pt-1 text-[11px] text-error flex items-center gap-1.5 font-code-bold">
+<span class="material-symbols-outlined text-[14px]">block</span>
+<span>Zero token issued • Blocked before network socket dispatch</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 3: User Reassurance Metric (Large High-Contrast Banner) -->
+<div class="rounded-xl bg-surface-container-low border border-outline-variant p-4 space-y-2 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-emerald-950/30 via-transparent to-transparent pointer-events-none"></div>
+<div class="flex items-start justify-between relative z-10">
+<div>
+<span class="font-caption-medium text-caption text-on-surface-variant block uppercase tracking-wider">
+                Sovereign Escrow Status
+              </span>
+<div class="mt-1 flex items-baseline gap-2">
+<span class="font-code-bold text-3xl font-bold tracking-tight text-emerald-400">0</span>
+<span class="font-code-bold text-caption-medium text-emerald-400">PAYMENT TOOL EXECUTIONS</span>
+</div>
+</div>
+<div class="w-9 h-9 rounded-full bg-emerald-950/60 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</div>
+</div>
+<p class="relative z-10 font-caption text-caption text-on-surface-variant leading-relaxed pt-1 border-t border-outline-variant/40">
+            Zero unauthorized rupees, tokens, or database writes dispatched. All funds remain in secure escrow.
+          </p>
+</div>
+<!-- SECTION 4: Inbound Agent RPC Request (Monospace Block) -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between px-1">
+<span class="font-caption-medium text-caption-medium text-on-surface-variant tracking-wider uppercase">
+              Inbound Agent RPC Request
+            </span>
+<button class="text-primary hover:text-primary-fixed-dim font-code-sm text-[11px] flex items-center gap-1 active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[13px]">content_copy</span>
+<span>Copy JSON</span>
+</button>
+</div>
+<div class="rounded-xl bg-surface-container-lowest border border-outline-variant p-3 font-code-sm text-[12px] leading-relaxed overflow-x-auto text-on-surface">
+<div class="text-on-surface-variant">// Boundary intercept raw payload trace</div>
+<div class="mt-1">
+<span class="text-secondary-fixed">"jsonrpc"</span>: <span class="text-primary">"2.0"</span>,<br/>
+<span class="text-secondary-fixed">"method"</span>: <span class="text-error font-bold">"payments.send"</span>,<br/>
+<span class="text-secondary-fixed">"params"</span>: {<br/>
+                <span class="text-secondary-fixed">"recipient"</span>: <span class="text-error font-bold">"Mehta Ice Suppliers"</span>,<br/>
+                <span class="text-secondary-fixed">"account_dest"</span>: <span class="text-primary">"ICIC0001892-339182901"</span>,<br/>
+                <span class="text-secondary-fixed">"amount_paise"</span>: <span class="text-on-surface">500000</span>,<br/>
+                <span class="text-secondary-fixed">"auth_token"</span>: <span class="text-on-surface-variant">"sk-sec-••••••••••••c21"</span><br/>
+              },<br/>
+<span class="text-secondary-fixed">"invariant_check"</span>: <span class="text-error font-semibold">"FAILED (HASH_DIVERGENCE)"</span>
+</div>
+</div>
+</div>
+<!-- SECTION 5: Cryptographic Merkle Anchor Record -->
+<div class="rounded-xl bg-surface-container-low border border-outline-variant p-3.5 space-y-2.5">
+<div class="flex items-center justify-between border-b border-outline-variant/50 pb-2">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-primary text-[16px]">token</span>
+<span class="font-title-card text-caption-medium tracking-wide">CRYPTOGRAPHIC MERKLE ANCHOR</span>
+</div>
+<span class="font-code-sm text-[11px] text-primary">#1044</span>
+</div>
+<div class="space-y-2 font-code-sm text-[11px]">
+<!-- Current Hash -->
+<div class="flex items-center justify-between p-1.5 rounded bg-surface-dim border border-outline-variant/40">
+<div class="min-w-0 pr-2">
+<span class="text-on-surface-variant block text-[10px]">CURRENT BLOCK HASH</span>
+<span class="text-on-surface font-mono truncate block">0x9f3a8b27c109...e21</span>
+</div>
+<button aria-label="Copy Current Block Hash" class="text-primary hover:text-primary-fixed-dim shrink-0 p-1 active:scale-95" type="button">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+</button>
+</div>
+<!-- Prev Hash -->
+<div class="flex items-center justify-between p-1.5 rounded bg-surface-dim border border-outline-variant/40">
+<div class="min-w-0 pr-2">
+<span class="text-on-surface-variant block text-[10px]">PREV BLOCK HASH</span>
+<span class="text-on-surface-variant font-mono truncate block">0x7b1e42a9018d...04d</span>
+</div>
+<button aria-label="Copy Prev Block Hash" class="text-primary hover:text-primary-fixed-dim shrink-0 p-1 active:scale-95" type="button">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+</button>
+</div>
+<div class="flex items-center justify-between pt-1 text-[11px]">
+<span class="text-on-surface-variant">Ledger State:</span>
+<span class="text-primary font-medium flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                Sealed &amp; Tombstoned in Local Ledger
+              </span>
+</div>
+</div>
+</div>
+<!-- Buffer for safe bottom scrolling above sticky dock -->
+<div class="h-4"></div>
+</div>
+<!-- STICKY FOOTER (Docked above mobile safe area) -->
+<div class="px-4 py-3 bg-surface-dim border-t border-outline-variant shrink-0 space-y-2.5">
+<!-- Immutable Negative Constraint Explainer -->
+<div class="flex items-start gap-1.5 px-1 text-on-surface-variant font-caption text-[11px] leading-tight">
+<span class="material-symbols-outlined text-[14px] text-outline mt-0.5 shrink-0">lock</span>
+<p>
+            Blocked actions cannot be overridden from this screen. To modify, create a new signed request in SecOps console.
+          </p>
+</div>
+<!-- Primary Forensic Defensive Action: Pause Agent -->
+<button class="w-full py-3.5 px-4 rounded-xl border border-error text-error bg-error-container/20 hover:bg-error-container/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2 font-body-semibold text-body-default shadow-sm" type="button">
+<span class="material-symbols-outlined text-[20px]">pause_circle</span>
+<span>Pause agent</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

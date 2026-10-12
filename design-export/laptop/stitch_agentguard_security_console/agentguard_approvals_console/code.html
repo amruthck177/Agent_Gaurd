@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentGuard - Human Approvals Mission Control</title>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary": "#253048",
+            "surface-container": "#19202e",
+            "on-surface-variant": "#d3c4b2",
+            "tertiary": "#bac6e7",
+            "on-surface": "#dce2f6",
+            "on-error": "#690005",
+            "on-background": "#dce2f6",
+            "on-primary-fixed": "#281900",
+            "secondary-fixed": "#d8e2ff",
+            "on-primary-fixed-variant": "#604100",
+            "on-tertiary": "#24304a",
+            "secondary-container": "#3e4962",
+            "surface-dim": "#0c1321",
+            "inverse-surface": "#dce2f6",
+            "on-secondary-container": "#adb8d6",
+            "tertiary-fixed": "#d8e2ff",
+            "surface-tint": "#f4bd61",
+            "surface-bright": "#323949",
+            "secondary-fixed-dim": "#bbc6e4",
+            "surface-container-high": "#232a39",
+            "on-tertiary-container": "#293550",
+            "outline": "#9c8f7e",
+            "inverse-primary": "#7e5700",
+            "on-primary-container": "#4a3100",
+            "primary-fixed": "#ffdead",
+            "tertiary-container": "#929ebd",
+            "on-error-container": "#ffdad6",
+            "secondary": "#bbc6e4",
+            "on-tertiary-fixed-variant": "#3b4662",
+            "error-container": "#93000a",
+            "on-tertiary-fixed": "#0e1b34",
+            "surface": "#0c1321",
+            "inverse-on-surface": "#2a3040",
+            "on-secondary-fixed": "#101b32",
+            "surface-variant": "#2e3544",
+            "background": "#0c1321",
+            "error": "#ffb4ab",
+            "on-secondary-fixed-variant": "#3c475f",
+            "primary": "#f4bd61",
+            "tertiary-fixed-dim": "#bac6e7",
+            "on-primary": "#432c00",
+            "surface-container-lowest": "#070e1c",
+            "surface-container-low": "#151b2a",
+            "primary-fixed-dim": "#f4bd61",
+            "surface-container-highest": "#2e3544",
+            "primary-container": "#c8963e",
+            "outline-variant": "#4f4537"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-sm": "0.5rem",
+            "margin": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "margin-desktop": "2rem"
+          },
+          fontFamily: {
+            "title-card": ["Inter"],
+            "caption-medium": ["Inter"],
+            "stat-lg": ["Inter"],
+            "body-default": ["Inter"],
+            "headline-page": ["Inter"],
+            "code-bold": ["JetBrains Mono"],
+            "code-sm": ["JetBrains Mono"],
+            "caption": ["Inter"],
+            "code-default": ["JetBrains Mono"],
+            "headline-page-mobile": ["Inter"],
+            "body-semibold": ["Inter"]
+          },
+          fontSize: {
+            "title-card": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "caption-medium": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "stat-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-default": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-page": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "code-bold": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "code-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "caption": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "code-default": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-page-mobile": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-semibold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #0c1321;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #232a39;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #4f4537;
+    }
+  </style>
+</head>
+<body class="bg-surface-dim text-on-surface antialiased font-body-default text-body-default min-h-screen flex flex-col selection:bg-primary-container selection:text-surface-dim">
+<div class="flex flex-1 min-h-screen overflow-hidden">
+<!-- 1. LEFT NAVIGATION SIDEBAR (240px) -->
+<aside class="w-60 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col flex-shrink-0 z-30 select-none">
+<!-- Logo Branding -->
+<div class="h-16 px-4 flex items-center gap-3 border-b border-outline-variant/30">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high border border-outline-variant/60 flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-[20px]">shield</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-page-mobile text-headline-page-mobile font-bold text-primary tracking-tight leading-none">AgentGuard</span>
+<span class="font-code-sm text-[10px] text-outline tracking-wider uppercase mt-1">SOVEREIGN GATE</span>
+</div>
+</div>
+<!-- Navigation items -->
+<nav class="flex-1 px-3 py-4 space-y-1.5 custom-scroll overflow-y-auto">
+<!-- Live Feed -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">stream</span>
+<span class="font-caption-medium text-caption-medium">Live Feed</span>
+</a>
+<!-- Approvals (Active Anchor) -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-surface-container-high text-primary border border-primary/30 relative font-body-semibold shadow-sm" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<span class="font-caption-medium text-caption-medium">Approvals</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/40 font-code-sm text-[11px] font-bold">1</span>
+</a>
+<!-- Policies -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">policy</span>
+<span class="font-caption-medium text-caption-medium">Policies</span>
+</a>
+<!-- Audit Log -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">history_toggle_off</span>
+<span class="font-caption-medium text-caption-medium">Audit Log</span>
+</a>
+<!-- Test Results -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">fact_check</span>
+<span class="font-caption-medium text-caption-medium">Test Results</span>
+</a>
+<!-- Demo Panel -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">terminal</span>
+<span class="font-caption-medium text-caption-medium">Demo Panel</span>
+</a>
+</nav>
+<!-- Bottom Chip / Enclave Status -->
+<div class="p-3 border-t border-outline-variant/30 bg-surface-dim">
+<div class="flex items-center gap-2 p-2.5 rounded-lg bg-surface-container border border-outline-variant/40">
+<span class="material-symbols-outlined text-outline text-[16px]">memory</span>
+<div class="flex flex-col min-w-0">
+<span class="font-caption-medium text-[11px] text-on-surface font-semibold truncate">Simulated MVP: mock tools</span>
+<span class="font-code-sm text-[10px] text-outline">v2.4.1 deterministic</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- RIGHT WORKSPACE CANVAS -->
+<div class="flex-1 flex flex-col min-w-0 bg-surface-dim overflow-y-auto custom-scroll">
+<!-- 2. TOP BAR (64px) & Dismissible Sovereign Banner -->
+<header class="bg-surface-dim border-b border-outline-variant/30 sticky top-0 z-20">
+<div class="h-16 px-6 flex items-center justify-between gap-4">
+<!-- Left: Agent selector & Search -->
+<div class="flex items-center gap-4 flex-1 max-w-xl">
+<!-- Agent Selector Dropdown -->
+<div class="relative flex items-center">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-high border border-outline-variant hover:border-primary/50 text-on-surface transition-colors" type="button">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+<span class="font-code-bold text-code-bold text-primary">accounts-agent</span>
+<span class="material-symbols-outlined text-outline text-[16px]">expand_more</span>
+</button>
+</div>
+<!-- Intercept Search Input -->
+<div class="relative flex-1 max-w-xs">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[16px]">search</span>
+<input class="w-full bg-surface-container pl-9 pr-12 py-1.5 rounded-lg border border-outline-variant text-on-surface text-body-default placeholder:text-outline/70 focus:outline-none focus:border-primary transition-all font-body-default" placeholder="Search intercepts..." type="text"/>
+<span class="absolute right-2.5 top-2 px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant/60 font-code-sm text-[10px] text-outline">⌘K</span>
+</div>
+</div>
+<!-- Right: Status, Controls, Profile -->
+<div class="flex items-center gap-4">
+<!-- Status Pill: Gateway online -->
+<div class="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border border-outline-variant/40">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Gateway: <span class="text-on-surface font-semibold">online</span> • 0.4ms lat</span>
+</div>
+<!-- Red-outline button: Pause Agent -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-500/50 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 font-caption-medium text-caption-medium transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-red-400">pause_circle</span>
+<span>Pause Agent</span>
+</button>
+<!-- SecOps Lead avatar badge -->
+<div class="flex items-center gap-2.5 pl-3 border-l border-outline-variant/40">
+<div class="w-8 h-8 rounded-full bg-primary-container text-surface-dim font-body-semibold text-[12px] flex items-center justify-center font-bold ring-1 ring-outline">
+                SL
+              </div>
+<div class="hidden xl:flex flex-col text-left">
+<span class="font-caption-medium text-caption-medium text-on-surface leading-tight">SecOps Lead</span>
+<span class="font-code-sm text-[10px] text-outline">Tier-3 Keymaster</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Slim dismissible banner beneath header -->
+<div class="bg-surface-container-lowest px-6 py-2 border-t border-outline-variant/20 flex items-center justify-between text-caption">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<p class="text-on-surface-variant font-caption text-caption">
+              Enforcement runs in code at the gateway, outside the AI. Errors fail closed.
+            </p>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-primary border border-primary/30 font-code-sm text-[11px] tracking-wide">
+              ISO/IEC 42001 Guard
+            </span>
+<button class="text-outline hover:text-on-surface flex items-center" type="button">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+</header>
+<!-- 3. PAGE HEADER & TABS -->
+<div class="px-8 pt-8 pb-4">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-3">
+<h1 class="font-headline-page text-headline-page text-on-surface font-semibold tracking-tight">Human Approvals</h1>
+<span class="px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/30 text-primary font-code-sm text-code-sm font-semibold tracking-wider uppercase">
+                Cryptographically Bound • Single-Use
+              </span>
+</div>
+<p class="font-body-default text-body-default text-outline mt-1 max-w-3xl">
+              Review intercepted high-stakes actions requiring deterministic human sign-off before gateway execution.
+            </p>
+</div>
+</div>
+<!-- Five Tabs with Counts -->
+<div class="flex items-center gap-2 mt-6 border-b border-outline-variant/30 overflow-x-auto pb-px">
+<!-- Pending (Active) -->
+<button class="flex items-center gap-2 px-4 py-2.5 border-b-2 border-primary text-primary font-caption-medium text-caption-medium bg-surface-container/50 rounded-t-lg transition-colors" type="button">
+<span>Pending</span>
+<span class="px-1.5 py-0.2 rounded-full bg-primary text-surface-dim font-code-sm text-[11px] font-bold">1</span>
+</button>
+<!-- Approved -->
+<button class="flex items-center gap-2 px-4 py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 rounded-t-lg transition-colors font-caption-medium text-caption-medium" type="button">
+<span>Approved</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-outline font-code-sm text-[11px]">2</span>
+</button>
+<!-- Rejected -->
+<button class="flex items-center gap-2 px-4 py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 rounded-t-lg transition-colors font-caption-medium text-caption-medium" type="button">
+<span>Rejected</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-outline font-code-sm text-[11px]">0</span>
+</button>
+<!-- Expired -->
+<button class="flex items-center gap-2 px-4 py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 rounded-t-lg transition-colors font-caption-medium text-caption-medium" type="button">
+<span>Expired</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-outline font-code-sm text-[11px]">0</span>
+</button>
+<!-- Revoked -->
+<button class="flex items-center gap-2 px-4 py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/30 rounded-t-lg transition-colors font-caption-medium text-caption-medium" type="button">
+<span>Revoked</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-outline font-code-sm text-[11px]">0</span>
+</button>
+</div>
+</div>
+<!-- 4. MAIN CONTENT AREA (TWO COLUMNS: 65% / 35%) -->
+<main class="px-8 pb-12 grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+<!-- LEFT COLUMN (Approx 65% width) - Approvals List / Active Pending Tab -->
+<div class="xl:col-span-8 space-y-6">
+<!-- PROMINENT PENDING CARD -->
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/70 shadow-2xl overflow-hidden relative">
+<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-primary to-amber-500"></div>
+<div class="p-6">
+<!-- Top Row: Badge, Intercept ID, Countdown -->
+<div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-outline-variant/30">
+<div class="flex items-center gap-2.5">
+<!-- ASK HUMAN Chip -->
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 font-caption-medium text-[12px] font-semibold">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+                    ASK HUMAN
+                  </span>
+<span class="font-code-sm text-code-sm text-outline">11:44 · Intercept #int-8844-c1</span>
+</div>
+<!-- Countdown chip -->
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-300 font-code-bold text-code-bold">
+<span>⏳</span>
+<span>Expires in 09:12</span>
+</div>
+</div>
+<!-- Main Title and Amount Display -->
+<div class="mt-4">
+<div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+<h2 class="font-headline-page text-headline-page text-on-surface font-bold tracking-tight">
+                    Payment ₹80,000 to Mehta Ice Suppliers
+                  </h2>
+<span class="font-stat-lg text-stat-lg text-primary tracking-tight font-code-bold">₹80,000</span>
+</div>
+<!-- Policy trigger chips -->
+<div class="flex flex-wrap items-center gap-2 mt-3">
+<span class="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 font-caption-medium text-[12px]">
+                    Over ₹10,000 limit
+                  </span>
+<span class="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 font-caption-medium text-[12px]">
+                    New payee
+                  </span>
+<span class="px-2.5 py-1 rounded-md bg-surface-container-high border border-outline-variant text-tertiary font-code-sm text-[12px]">
+                    Rule: POL-PAY-002
+                  </span>
+</div>
+<!-- Enclave explanation note -->
+<div class="mt-4 p-3 rounded-lg bg-surface-container border border-outline-variant/40 flex items-start gap-2.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-outline mt-0.5 text-[18px]">gavel</span>
+<p class="font-body-default text-body-default leading-relaxed">
+                    AI agent <code class="px-1.5 py-0.5 rounded bg-surface-dim font-code-sm text-primary">accounts-agent</code> attempted to dispatch fund transfer. Action held at gateway boundary.
+                  </p>
+</div>
+</div>
+<!-- Signature Approved-values block / Enclave Bound Action block -->
+<div class="mt-6 rounded-lg bg-surface-container-lowest border border-outline-variant/60 p-4">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant/30 mb-3">
+<span class="font-caption-medium text-caption-medium text-outline uppercase tracking-wider font-semibold">Enclave Bound Action Parameters</span>
+<span class="font-code-sm text-[11px] text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">lock</span>
+                    HMAC-SHA256 Bound
+                  </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-body-default font-body-default">
+<div>
+<span class="block text-outline text-[12px] font-caption">Tool Target</span>
+<span class="font-code-bold text-code-bold text-on-surface">payments.send</span>
+</div>
+<div>
+<span class="block text-outline text-[12px] font-caption">Recipient Account</span>
+<span class="text-on-surface font-body-semibold">Mehta Ice Suppliers</span>
+<span class="block font-code-sm text-[11px] text-outline">mehta-ice@hdfc</span>
+</div>
+<div>
+<span class="block text-outline text-[12px] font-caption">Calculated Amount</span>
+<span class="font-code-bold text-code-bold text-primary">₹80,000.00 INR</span>
+</div>
+<div>
+<span class="block text-outline text-[12px] font-caption">Token Validity Window</span>
+<span class="text-on-surface font-caption-medium">15 minutes (Single-use token)</span>
+</div>
+</div>
+<!-- Assurance guarantee statement -->
+<div class="mt-4 pt-3 border-t border-outline-variant/20 flex items-center gap-2 text-outline font-caption text-[12px]">
+<span class="material-symbols-outlined text-primary text-[15px]">verified_user</span>
+<span>Fail-Closed Guarantee: Approval generates a single-use HMAC token bound strictly to these parameters.</span>
+</div>
+</div>
+<!-- CTA Actions -->
+<div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-outline-variant/30">
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<!-- Primary CTA: Sovereign Gold Button -->
+<button class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-primary text-surface-dim hover:bg-surface-tint font-body-semibold text-body-semibold transition-all active:scale-95 shadow-lg shadow-primary/10" type="button">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Approve Bound (₹80,000)</span>
+</button>
+<!-- Secondary CTA: Red Outline Button -->
+<button class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg border border-red-500/50 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-body-semibold text-body-semibold transition-all active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+<span>Reject &amp; Block Action</span>
+</button>
+</div>
+<!-- Forensic Link -->
+<button class="flex items-center gap-1.5 text-outline hover:text-primary transition-colors font-code-sm text-code-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">data_object</span>
+<span>View forensic intercept JSON</span>
+</button>
+</div>
+</div>
+</div>
+<!-- RECENTLY RESOLVED APPROVALS SECTION -->
+<div class="space-y-4 pt-2">
+<div class="flex items-center justify-between">
+<h3 class="font-title-card text-title-card text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[20px]">history</span>
+                Recently Resolved Approvals
+              </h3>
+<span class="font-caption text-caption text-outline">Audited Ledger Window</span>
+</div>
+<!-- Card 1: APR-0001 (Used) -->
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/40 p-4 hover:bg-surface-container transition-colors">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start sm:items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+<span class="material-symbols-outlined text-[16px]">done_all</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-bold text-code-bold text-on-surface">APR-0001</span>
+<span class="text-outline text-caption">•</span>
+<span class="font-code-sm text-code-sm text-outline">payments.send</span>
+</div>
+<p class="font-body-default text-body-default text-on-surface-variant mt-0.5">
+<strong class="text-on-surface font-code-bold">₹5,000</strong> to Supplier A
+                    </p>
+</div>
+</div>
+<div class="flex items-center gap-4 self-end sm:self-auto">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-caption-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    Used
+                  </span>
+<span class="font-code-sm text-code-sm text-outline">Executed at 11:38</span>
+</div>
+</div>
+</div>
+<!-- Card 2: APR-0002 (Unused / Revocable) -->
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/40 p-4 hover:bg-surface-container transition-colors">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start sm:items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px]">hourglass_top</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-bold text-code-bold text-on-surface">APR-0002</span>
+<span class="text-outline text-caption">•</span>
+<span class="font-code-sm text-code-sm text-outline">payments.send</span>
+</div>
+<p class="font-body-default text-body-default text-on-surface-variant mt-0.5">
+<strong class="text-on-surface font-code-bold">₹5,000</strong> to Supplier A
+                    </p>
+</div>
+</div>
+<div class="flex items-center gap-3 self-end sm:self-auto">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 font-caption-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    Unused
+                  </span>
+<span class="font-code-sm text-code-sm text-amber-400/90 font-medium">06:40 left</span>
+<button class="px-3 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 font-caption-medium text-caption-medium transition-all active:scale-95" type="button">
+                    Revoke
+                  </button>
+</div>
+</div>
+</div>
+<!-- Empty State Preview Box for Alternate Tabs -->
+<div class="rounded-xl border border-dashed border-outline-variant/30 p-6 flex flex-col items-center justify-center text-center bg-surface-container-lowest/50 mt-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-outline mb-2">
+<span class="material-symbols-outlined text-[20px]">shield_lock</span>
+</div>
+<h4 class="font-title-card text-[14px] text-on-surface font-medium">Nothing waiting for you</h4>
+<p class="font-caption text-caption text-outline max-w-xs mt-0.5">
+                All clear. No pending escalations in this category.
+              </p>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN (Approx 35% width) - Mobile Approver Preview & QR Pairing -->
+<div class="xl:col-span-4 space-y-6">
+<!-- Companion Header -->
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/60 p-5 shadow-lg">
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">devices</span>
+<h3 class="font-title-card text-title-card text-on-surface font-semibold">Live Approver Companion</h3>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant font-code-sm text-[10px] text-outline">Simulated</span>
+<span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 font-code-sm text-[10px] text-emerald-400">Sync: Active</span>
+</div>
+</div>
+<!-- Sleek Phone Mockup Container (390px centered frame) -->
+<div class="mt-5 flex justify-center">
+<div class="w-[320px] sm:w-[350px] bg-[#070e1c] rounded-[36px] border-[3px] border-[#24304A] p-3 shadow-2xl relative">
+<!-- Notch -->
+<div class="w-28 h-4 bg-[#121B2E] rounded-b-xl mx-auto mb-3 flex items-center justify-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-black/60"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-black/80"></div>
+</div>
+<!-- Simulated Phone Inner Screen -->
+<div class="bg-surface-container-lowest rounded-[28px] border border-outline-variant/40 p-4 space-y-3.5 text-left">
+<!-- Phone Top Header -->
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/20">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[13px]">shield</span>
+</div>
+<span class="font-body-semibold text-[12px] text-on-surface">AgentGuard Alerts</span>
+</div>
+<!-- Language selector -->
+<div class="flex items-center gap-1 font-caption text-[10px] text-outline">
+<span class="text-primary font-bold">English</span>
+<span>|</span>
+<span>हिंदी</span>
+<span>|</span>
+<span>ಕನ್ನಡ</span>
+</div>
+</div>
+<!-- Simulated Message Bubble -->
+<div class="p-2.5 rounded-lg bg-surface-container-high/60 border border-outline-variant/30 space-y-1.5">
+<p class="font-body-semibold text-[12px] text-on-surface leading-snug">
+                      Approve payment? <span class="text-primary font-bold">₹80,000</span> to Mehta Ice Suppliers.
+                    </p>
+<p class="font-caption text-[11px] text-outline">
+                      ಮೆಹ್ತಾ ಐಸ್ ಪೂರೈಕೆದಾರರಿಗೆ ₹80,000 ಪಾವತಿಯನ್ನು ಅಧಿಕೃತಗೊಳಿಸುವುದೇ?
+                    </p>
+</div>
+<!-- Compact raw-action parameter card -->
+<div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant/50 space-y-1 font-code-sm text-[11px]">
+<div class="flex justify-between">
+<span class="text-outline">Tool:</span>
+<span class="text-on-surface font-semibold">payments.send</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Payee:</span>
+<span class="text-on-surface truncate max-w-[140px]">Mehta Ice Suppliers</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Amount:</span>
+<span class="text-primary font-bold">₹80,000.00</span>
+</div>
+</div>
+<!-- Countdown & Mobile Action CTAs -->
+<div class="pt-1 space-y-2">
+<div class="flex items-center justify-center gap-1 text-[11px] font-code-sm text-amber-400">
+<span class="material-symbols-outlined text-[13px]">timer</span>
+<span>09:12 left to sign</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-2 px-2 rounded-lg bg-primary text-surface-dim font-caption-medium text-[12px] font-bold text-center active:scale-95 shadow" type="button">
+                        Approve (₹80k)
+                      </button>
+<button class="py-2 px-2 rounded-lg border border-red-500/40 bg-red-500/10 text-red-400 font-caption-medium text-[12px] font-semibold text-center active:scale-95" type="button">
+                        Reject
+                      </button>
+</div>
+</div>
+</div>
+<!-- Phone Bottom Bar Indicator -->
+<div class="w-20 h-1 bg-outline-variant/60 rounded-full mx-auto mt-3"></div>
+</div>
+</div>
+<!-- Companion Controls & QR Pairing Block -->
+<div class="mt-6 pt-4 border-t border-outline-variant/30 space-y-4">
+<div class="flex items-center gap-4">
+<!-- Styled QR Code Vector Graphic -->
+<div class="w-16 h-16 rounded-lg bg-surface-container-high border border-outline-variant p-1.5 flex items-center justify-center flex-shrink-0">
+<div class="w-full h-full bg-surface-container-lowest rounded p-1 flex flex-col justify-between">
+<div class="flex justify-between">
+<div class="w-3.5 h-3.5 border-2 border-primary rounded-sm flex items-center justify-center"><div class="w-1.5 h-1.5 bg-primary"></div></div>
+<div class="w-3.5 h-3.5 border-2 border-primary rounded-sm flex items-center justify-center"><div class="w-1.5 h-1.5 bg-primary"></div></div>
+</div>
+<div class="flex justify-center"><div class="w-2 h-2 bg-primary/60"></div></div>
+<div class="flex justify-between">
+<div class="w-3.5 h-3.5 border-2 border-primary rounded-sm flex items-center justify-center"><div class="w-1.5 h-1.5 bg-primary"></div></div>
+<div class="w-2 h-2 bg-primary"></div>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-title-card text-[14px] text-on-surface font-semibold">Open on phone</h4>
+<p class="font-caption text-caption text-outline mt-0.5">
+                    Scan with mobile device to test biometric WhatsApp / Telegram push approval simulation.
+                  </p>
+</div>
+</div>
+<!-- Copy Secure Approver Link -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container border border-outline-variant/40">
+<span class="font-code-sm text-[11px] text-outline truncate max-w-[210px]">
+                  https://app.agentguard.io/auth/sign/int-8844
+                </span>
+<button class="text-primary hover:text-surface-tint font-caption-medium text-[12px] flex items-center gap-1 font-semibold flex-shrink-0" type="button">
+<span>Copy</span>
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+</button>
+</div>
+<!-- Cryptographic assurance badge note -->
+<div class="flex items-center justify-center gap-1.5 font-code-sm text-[11px] text-outline/80 text-center pt-1">
+<span class="material-symbols-outlined text-[13px] text-primary">security</span>
+<span>Hardware Enclave v2.1 • Zero Unbound Agent Capability</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- BottomNavBar: Suppressed on desktop; available on mobile viewport per semantic rules -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 border-t border-outline-variant bg-surface-container-lowest pb-safe">
+<!-- Live Feed -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1" href="#">
+<span class="material-symbols-outlined">stream</span>
+<span>Live Feed</span>
+</a>
+<!-- Approvals (Active) -->
+<a class="flex flex-col items-center justify-center text-primary font-caption-medium text-caption-medium gap-1" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span>Approvals</span>
+</a>
+<!-- Policies -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1" href="#">
+<span class="material-symbols-outlined">policy</span>
+<span>Policies</span>
+</a>
+<!-- Audit Log -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1" href="#">
+<span class="material-symbols-outlined">history_toggle_off</span>
+<span>Audit Log</span>
+</a>
+</nav>
+</body></html>

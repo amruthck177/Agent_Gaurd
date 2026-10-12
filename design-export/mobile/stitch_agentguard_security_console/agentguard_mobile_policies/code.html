@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>AgentGuard - Policies Console</title>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error": "#ffb4ab",
+            "inverse-on-surface": "#2a3040",
+            "primary-container": "#c8963e",
+            "surface-tint": "#f4bd61",
+            "surface-dim": "#0c1321",
+            "background": "#0c1321",
+            "secondary-fixed-dim": "#bbc6e4",
+            "on-surface": "#dce2f6",
+            "surface-container": "#19202e",
+            "primary": "#f4bd61",
+            "primary-fixed": "#ffdead",
+            "surface-container-highest": "#2e3544",
+            "on-error-container": "#ffdad6",
+            "surface": "#0c1321",
+            "on-error": "#690005",
+            "tertiary-fixed-dim": "#bac6e7",
+            "secondary-fixed": "#d8e2ff",
+            "on-background": "#dce2f6",
+            "inverse-primary": "#7e5700",
+            "surface-container-high": "#232a39",
+            "on-secondary-fixed-variant": "#3c475f",
+            "on-primary-fixed-variant": "#604100",
+            "secondary-container": "#3e4962",
+            "on-secondary-container": "#adb8d6",
+            "on-surface-variant": "#d3c4b2",
+            "surface-container-low": "#151b2a",
+            "inverse-surface": "#dce2f6",
+            "on-primary-container": "#4a3100",
+            "tertiary": "#bac6e7",
+            "surface-variant": "#2e3544",
+            "tertiary-fixed": "#d8e2ff",
+            "on-tertiary-fixed-variant": "#3b4662",
+            "primary-fixed-dim": "#f4bd61",
+            "surface-bright": "#323949",
+            "outline-variant": "#4f4537",
+            "secondary": "#bbc6e4",
+            "on-primary-fixed": "#281900",
+            "on-tertiary-container": "#293550",
+            "on-secondary-fixed": "#101b32",
+            "on-tertiary": "#24304a",
+            "on-secondary": "#253048",
+            "on-primary": "#432c00",
+            "tertiary-container": "#929ebd",
+            "surface-container-lowest": "#070e1c",
+            "outline": "#9c8f7e",
+            "on-tertiary-fixed": "#0e1b34",
+            "error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin": "1rem",
+            "gutter": "1rem",
+            "margin-desktop": "2rem",
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "stat-lg": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "caption-medium": ["Inter"],
+            "code-bold": ["JetBrains Mono"],
+            "headline-page": ["Inter"],
+            "body-semibold": ["Inter"],
+            "title-card": ["Inter"],
+            "code-default": ["JetBrains Mono"],
+            "caption": ["Inter"],
+            "body-default": ["Inter"],
+            "headline-page-mobile": ["Inter"]
+          },
+          "fontSize": {
+            "stat-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "code-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "caption-medium": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "code-bold": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "headline-page": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "body-semibold": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "title-card": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "code-default": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "caption": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-default": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-page-mobile": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .pb-safe {
+      padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
+    }
+    /* Sovereign Grid Backdrop Accent */
+    .sovereign-mesh {
+      background-image: radial-gradient(circle at 50% 0%, rgba(200, 150, 62, 0.08) 0%, rgba(12, 19, 33, 0) 65%);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-default min-h-screen selection:bg-primary-container selection:text-on-primary-container sovereign-mesh pb-36">
+<!-- TOP APP BAR -->
+<header class="sticky top-0 z-40 w-full px-4 h-14 bg-surface-dim border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container border border-outline-variant flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-page-mobile text-headline-page-mobile font-bold text-primary tracking-tight">AgentGuard</span>
+</div>
+</div>
+<!-- Gateway Metric & SecOps Badge -->
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-[#2E9E5B] animate-pulse"></span>
+<span class="font-code-sm text-code-sm text-on-surface">GW: 0.4ms</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center font-caption-medium text-caption-medium text-primary font-bold shadow-sm">
+        SO
+      </div>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="px-4 pt-4 pb-2 space-y-4 max-w-lg mx-auto">
+<!-- PAGE TITLE & SUMMARY -->
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-page text-headline-page text-on-surface tracking-tight">Policies</h1>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high border border-outline-variant text-[11px] font-caption-medium text-primary">
+            12 Active • 1 Draft
+          </span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant mt-0.5">Deterministic Gateway Guardrails</p>
+</div>
+<button class="w-8 h-8 rounded-lg bg-surface-container border border-outline-variant flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+<!-- IMMUTABILITY LOCK BANNER -->
+<section class="rounded-xl p-3.5 bg-surface-container-low border border-outline-variant relative overflow-hidden shadow-sm">
+<div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-primary/5 to-transparent pointer-events-none"></div>
+<div class="flex items-start gap-3">
+<div class="p-2 rounded-lg bg-primary-container/15 text-primary border border-primary/25 mt-0.5">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-1.5">
+<span class="font-body-semibold text-body-semibold text-on-surface">Deterministic Wasm Boundary</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-code-sm bg-primary/10 text-primary uppercase tracking-wider font-semibold">Zero Bypass</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant mt-1 leading-relaxed">
+            Rules are enforced in code at the gateway. The AI cannot override them. Interceptions trigger immediate fail-closed quarantine.
+          </p>
+</div>
+</div>
+</section>
+<!-- SEARCH & FILTER TOOLBAR -->
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[18px]">search</span>
+</div>
+<input class="w-full pl-9 pr-24 py-2 bg-surface-container border border-outline-variant rounded-lg text-on-surface text-[13px] placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Filter by agent, tool, or condition..." type="text" value=""/>
+<div class="absolute inset-y-0 right-1 flex items-center gap-1 pr-1.5">
+<span class="px-1.5 py-0.5 rounded bg-surface-dim border border-outline-variant text-[11px] font-code-sm text-on-surface-variant">⌘K</span>
+</div>
+</div>
+<!-- RULES SECTION HEADER -->
+<div class="flex items-center justify-between pt-1">
+<span class="font-code-sm text-code-sm uppercase tracking-wider text-outline font-semibold">Configured Interceptors (4 Shown)</span>
+<span class="font-code-sm text-code-sm text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+        Enforcing Live
+      </span>
+</div>
+<!-- RULE CARDS LIST -->
+<div class="space-y-3">
+<!-- RULE 1 (ACTIVE / EXPANDED IN DRAWER PREVIEW) -->
+<article class="p-3.5 rounded-xl bg-surface-container border-2 border-primary-container shadow-md transition-all active:scale-[0.99] relative">
+<div class="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[10px] font-code-bold tracking-tight shadow-sm">
+          EDITING NOW
+        </div>
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="font-code-bold text-code-bold text-primary tracking-tight">POL-PAY-001</span>
+<span class="text-outline text-xs">•</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant font-caption-medium text-caption-medium text-on-surface-variant">
+              Payments Agent
+            </span>
+</div>
+<!-- DECISION CHIP: ASK HUMAN -->
+<div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#f2b705]/10 border border-[#f2b705]/40 text-[#f2b705] text-[11px] font-body-semibold font-bold">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+            ASK HUMAN
+          </div>
+</div>
+<h3 class="font-title-card text-title-card text-on-surface mt-2 font-semibold">
+          Payments above ₹10,000
+        </h3>
+<!-- Monospace Logic Condition -->
+<div class="mt-2 p-2 rounded bg-surface-dim border border-outline-variant font-code-default text-code-default text-primary flex items-center justify-between overflow-x-auto">
+<code>amount &gt; 10,000 INR</code>
+<span class="material-symbols-outlined text-outline text-[16px]">code</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant mt-2">
+          Requires biometric or HMAC signature before gateway dispatch.
+        </p>
+</article>
+<!-- RULE 2 -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant hover:border-outline transition-colors active:scale-[0.99]">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="font-code-bold text-code-bold text-on-surface-variant tracking-tight">POL-ROLE-004</span>
+<span class="text-outline text-xs">•</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant font-caption-medium text-caption-medium text-on-surface-variant">
+              Reader Agents
+            </span>
+</div>
+<!-- DECISION CHIP: BLOCK -->
+<div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#d64545]/15 border border-[#d64545]/40 text-[#d64545] text-[11px] font-body-semibold font-bold">
+<span class="material-symbols-outlined text-[13px]">block</span>
+            BLOCK
+          </div>
+</div>
+<h3 class="font-title-card text-title-card text-on-surface mt-2 font-semibold">
+          Reader agents cannot use write tools
+        </h3>
+<!-- Monospace Logic Condition -->
+<div class="mt-2 p-2 rounded bg-surface-dim border border-outline-variant font-code-default text-code-default text-on-surface flex items-center justify-between overflow-x-auto">
+<code>agent.role == 'reader' &amp;&amp; tool.type == 'mutation'</code>
+<span class="material-symbols-outlined text-outline text-[16px]">lock_clock</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant mt-2">
+          Immediate fail-closed drop. Unauthorized writes prevented.
+        </p>
+</article>
+<!-- RULE 3 -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant hover:border-outline transition-colors active:scale-[0.99]">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="font-code-bold text-code-bold text-on-surface-variant tracking-tight">POL-SQL-002</span>
+<span class="text-outline text-xs">•</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant font-caption-medium text-caption-medium text-on-surface-variant">
+              SQL Runner
+            </span>
+</div>
+<!-- DECISION CHIP: BLOCK -->
+<div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#d64545]/15 border border-[#d64545]/40 text-[#d64545] text-[11px] font-body-semibold font-bold">
+<span class="material-symbols-outlined text-[13px]">block</span>
+            BLOCK
+          </div>
+</div>
+<h3 class="font-title-card text-title-card text-on-surface mt-2 font-semibold">
+          DROP, TRUNCATE, DELETE without WHERE
+        </h3>
+<!-- Monospace Logic Condition -->
+<div class="mt-2 p-2 rounded bg-surface-dim border border-outline-variant font-code-default text-code-default text-on-surface flex items-center justify-between overflow-x-auto">
+<code>query.ast contains destructive_stmt without where_clause</code>
+<span class="material-symbols-outlined text-outline text-[16px]">database</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant mt-2">
+          AST analysis rejects unconstrained data deletion.
+        </p>
+</article>
+<!-- RULE 4 -->
+<article class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant hover:border-outline transition-colors active:scale-[0.99]">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="font-code-bold text-code-bold text-on-surface-variant tracking-tight">POL-COMM-003</span>
+<span class="text-outline text-xs">•</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant font-caption-medium text-caption-medium text-on-surface-variant">
+              Outreach Agent
+            </span>
+</div>
+<!-- DECISION CHIP: ASK HUMAN -->
+<div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#f2b705]/10 border border-[#f2b705]/40 text-[#f2b705] text-[11px] font-body-semibold font-bold">
+<span class="material-symbols-outlined text-[13px]">warning</span>
+            ASK HUMAN
+          </div>
+</div>
+<h3 class="font-title-card text-title-card text-on-surface mt-2 font-semibold">
+          Email to unknown external domain
+        </h3>
+<!-- Monospace Logic Condition -->
+<div class="mt-2 p-2 rounded bg-surface-dim border border-outline-variant font-code-default text-code-default text-on-surface flex items-center justify-between overflow-x-auto">
+<code>recipient.domain not in allowed_domains_registry</code>
+<span class="material-symbols-outlined text-outline text-[16px]">mail</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant mt-2">
+          Intercepted in quarantine pending SecOps sign-off.
+        </p>
+</article>
+</div>
+<!-- EDIT SHEET / INSPECTION CARD DRAWER PREVIEW -->
+<section class="mt-6 rounded-2xl bg-surface-dim border-2 border-outline-variant p-4 shadow-2xl relative">
+<!-- Drawer Grab Handle -->
+<div class="w-10 h-1 bg-outline-variant rounded-full mx-auto mb-3"></div>
+<!-- Sheet Header -->
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant">
+<div>
+<span class="font-code-sm text-code-sm text-primary uppercase font-bold tracking-wider">Policy Inspector</span>
+<h2 class="font-headline-page-mobile text-headline-page-mobile text-on-surface font-semibold flex items-center gap-2">
+            Edit Rule • POL-PAY-001
+          </h2>
+</div>
+<button class="w-7 h-7 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+<!-- Form Fields -->
+<div class="mt-3.5 space-y-3.5">
+<!-- Field: Target Tool Selector -->
+<div>
+<label class="block font-code-sm text-code-sm uppercase tracking-wider text-outline mb-1">Target Intercept Tool</label>
+<div class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container border border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">account_balance_wallet</span>
+<span class="font-code-default text-code-default text-on-surface font-semibold">payments.send</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">expand_more</span>
+</div>
+</div>
+<!-- Field: Monospace Rule Builder Condition -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-code-sm text-code-sm uppercase tracking-wider text-outline">Deterministic Condition</label>
+<span class="text-[11px] font-code-sm text-primary">Wasm Regex / AST</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-lowest border border-outline-variant focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container">
+<div class="font-code-default text-code-default text-primary">
+              amount &gt; 10,000 INR
+            </div>
+</div>
+</div>
+<!-- Field: Decision Outcome Selector -->
+<div>
+<label class="block font-code-sm text-code-sm uppercase tracking-wider text-outline mb-1.5">Gateway Action Decision</label>
+<div class="grid grid-cols-3 gap-2">
+<!-- ALLOW -->
+<button class="py-2 px-1 rounded-lg bg-surface-container border border-outline-variant text-[12px] font-body-semibold text-on-surface-variant flex flex-col items-center gap-1 hover:border-outline" type="button">
+<span class="material-symbols-outlined text-[16px] text-[#2E9E5B]">check_circle</span>
+              ALLOW
+            </button>
+<!-- ASK HUMAN (SELECTED) -->
+<button class="py-2 px-1 rounded-lg bg-[#f2b705]/15 border-2 border-[#f2b705] text-[12px] font-body-semibold text-[#f2b705] flex flex-col items-center gap-1 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+              ASK HUMAN
+            </button>
+<!-- BLOCK -->
+<button class="py-2 px-1 rounded-lg bg-surface-container border border-outline-variant text-[12px] font-body-semibold text-on-surface-variant flex flex-col items-center gap-1 hover:border-outline" type="button">
+<span class="material-symbols-outlined text-[16px] text-[#d64545]">block</span>
+              BLOCK
+            </button>
+</div>
+</div>
+<!-- Field: Target Agents Scope & Latency -->
+<div class="pt-1 grid grid-cols-2 gap-2 text-left">
+<div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant">
+<span class="block font-code-sm text-code-sm text-outline uppercase">Applies To</span>
+<div class="flex flex-wrap gap-1 mt-1">
+<span class="px-1.5 py-0.5 rounded bg-surface-dim text-[11px] font-code-default text-on-surface border border-outline-variant">accounts-agent <span class="text-primary text-[10px]">v2.4.1</span></span>
+<span class="px-1.5 py-0.5 rounded bg-surface-dim text-[11px] font-code-default text-on-surface border border-outline-variant">billing-agent</span>
+</div>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant">
+<span class="block font-code-sm text-code-sm text-outline uppercase">Overhead SLA</span>
+<div class="flex items-center gap-1.5 mt-1.5">
+<span class="material-symbols-outlined text-[#2E9E5B] text-[16px]">bolt</span>
+<span class="font-code-bold text-code-bold text-on-surface">&lt;0.02ms</span>
+</div>
+<span class="text-[10px] font-caption text-outline">Wasm SIMD compiled</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- STICKY BOTTOM ACTION BAR (VERSION DRAFT & ACTIVATION) -->
+<div class="fixed bottom-[65px] left-0 right-0 z-30 px-4 py-2.5 bg-surface-dim/95 backdrop-blur-md border-t border-outline-variant">
+<div class="max-w-lg mx-auto flex items-center justify-between gap-3">
+<!-- Draft State Pill -->
+<div class="flex items-center gap-2">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<div class="flex flex-col">
+<span class="font-code-bold text-code-bold text-on-surface text-[12px]">Version 4 (draft)</span>
+<span class="text-[10px] font-caption text-outline">1 uncommitted rule change</span>
+</div>
+</div>
+<!-- Action Cluster -->
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container border border-outline-variant text-[13px] font-body-semibold text-on-surface hover:bg-surface-container-high transition-colors">
+          Discard
+        </button>
+<button class="px-4 py-1.5 rounded-lg bg-primary-container text-on-primary-container text-[13px] font-body-semibold font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-transform hover:bg-[#dcab54]">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+          Activate
+        </button>
+</div>
+</div>
+</div>
+<!-- FIXED BOTTOM NAVIGATION BAR -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 border-t border-outline-variant bg-surface-container-lowest pb-safe">
+<!-- Destination 1: Live Feed -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 hover:text-primary transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">stream</span>
+<span>Live Feed</span>
+</a>
+<!-- Destination 2: Approvals (with Badge) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 relative hover:text-primary transition-colors duration-150" href="#">
+<div class="relative">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+<span class="absolute -top-1 -right-2 px-1.2 min-w-3.5 h-3.5 bg-primary-container text-on-primary-container font-code-bold text-[9px] rounded-full flex items-center justify-center leading-none">
+          1
+        </span>
+</div>
+<span>Approvals</span>
+</a>
+<!-- Destination 3: Policies (ACTIVE) -->
+<a class="flex flex-col items-center justify-center text-primary font-caption-medium text-caption-medium gap-1" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">policy</span>
+<span class="font-semibold">Policies</span>
+</a>
+<!-- Destination 4: Audit Log -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-caption text-caption gap-1 hover:text-primary transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">history_toggle_off</span>
+<span>Audit Log</span>
+</a>
+</nav>
+</body></html>
