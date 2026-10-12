@@ -32,6 +32,7 @@ import asyncio
 import json
 import logging
 import os
+import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -63,6 +64,37 @@ from app.schemas import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Logging Security Filter (R2 + R4 Defense-in-Depth Layer)
+# ---------------------------------------------------------------------------
+class SecretMaskingFilter(logging.Filter):
+    """
+    Logging filter that scrubs sensitive patterns (API keys, tokens, credentials)
+    from all log records before they are written.
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        try:
+            if isinstance(record.msg, str):
+                record.msg = audit.mask_secrets(record.msg)
+            if record.args:
+                if isinstance(record.args, dict):
+                    record.args = audit.mask_secrets(record.args)
+                elif isinstance(record.args, tuple):
+                    record.args = tuple(
+                        audit.mask_secrets(a) if isinstance(a, (str, dict, list)) else a
+                        for a in record.args
+                    )
+        except Exception:
+            pass
+        return True
+
+
+_secret_filter = SecretMaskingFilter()
+logging.getLogger().addFilter(_secret_filter)
+logger.addFilter(_secret_filter)
 
 BENCHMARKS_RESULTS_PATH = Path(__file__).resolve().parent.parent.parent / "benchmarks" / "results.json"
 
@@ -157,11 +189,27 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
-    """Catches any unhandled exceptions, logs them, and returns clean 500 JSON without stack trace."""
-    logger.exception("Unhandled server exception: %s", exc)
+    """
+    Catches any unhandled exceptions, logs sanitized metadata, and returns
+    clean 500 JSON without stack trace or exception text (R2 + R4).
+    """
+    error_id = str(uuid.uuid4())
+    exc_type = type(exc).__name__
+    # Log ONLY exception type and error_id with sanitized metadata — NO tracebacks or local vars
+    logger.error(
+        "Unhandled exception [%s] type=%s method=%s path=%s",
+        error_id,
+        exc_type,
+        request.method,
+        request.url.path,
+    )
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "Internal server error", "error": str(exc)},
+        content={
+            "decision": "BLOCK",
+            "reason": "Gateway error: failed closed",
+            "error_id": error_id,
+        },
     )
 
 
