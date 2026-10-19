@@ -625,7 +625,7 @@ AgentGuard incorporates an automated benchmark runner (`benchmarks/run_benchmark
 
 | Commit Hash | Type | Commit Message | Scope & Purpose |
 |---|---|---|---|
-| *Pending* | `feat` | `deploy: add production multi-stage Dockerfile, docker-compose, render.yaml, CI/CD, and SPA serving` | Unified deployment infrastructure for single-container, PaaS, and cloud hosting |
+| `f3cfc90` | `feat` | `deploy: add production multi-stage Dockerfile, docker-compose, render.yaml, CI/CD, and SPA serving` | Unified deployment infrastructure for single-container, PaaS, and cloud hosting |
 | `9bbfa5c` | `docs` | `docs: add command line comments and complete commit history changelog table` | Added line-by-line command comments and commit changelog |
 | `33c565a` | `docs` | `docs: streamline Quick Start guide with concise two-terminal setup commands` | Updated README Quick Start section with ready-to-run two-terminal guide |
 | `a1aba87` | `docs` | `docs: expand README with detailed methodology, zero-trust model, and benchmarks` | Comprehensive architecture, zero-trust lifecycle, threat model, and benchmarks |
