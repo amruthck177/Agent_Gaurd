@@ -557,6 +557,315 @@ async def demo_tamper_endpoint(payload: Optional[Dict[str, Any]] = None) -> Dict
     return {"status": "tampered", "record_id": record_id}
 
 
+@app.post("/v1/demo/scenario", tags=["demo"])
+async def demo_scenario_endpoint(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Runs a single scripted demo scenario through the real gateway.
+    Accepts {"scenario": "run1"|"run2"|...|"run8"|"replay"|"gateway_down"}.
+    Returns structured result with decision, reason, params comparison, and tool count.
+    Disabled when DEMO_MODE != 1.
+    """
+    if os.getenv("DEMO_MODE", "1") != "1":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Demo endpoint disabled (DEMO_MODE != 1)",
+        )
+
+    scenario = payload.get("scenario", "")
+    db_file = get_db_path()
+
+    # Common identifiers
+    AGENT = "accounts-agent"
+    READER = "reader-agent"
+    TASK = "task-accounts-1"
+    READER_TASK = "task-reader-1"
+
+    result: Dict[str, Any] = {"scenario": scenario}
+
+    try:
+        if scenario == "run1":
+            # Run 1: Valid approved payment — create approval, approve it, execute with exact params
+            # Step A: Create approval for Supplier A ₹5,000
+            ap = approvals.create(
+                agent_id=AGENT, task_id=TASK, tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                db_path=db_file,
+            )
+            # Step B: Approve it
+            approvals.approve(ap.id, db_path=db_file)
+            # Step C: Execute with exact same params
+            resp = gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                approval_id=ap.id,
+            )
+            tc = _get_tool_call_count(db_file, "payments.send", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id, "approval_id": ap.id,
+                "tool": "payments.send", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "recipient", "approved": "Supplier A", "attempted": "Supplier A", "mismatch": False},
+                    {"label": "amount", "approved": "₹5,000", "attempted": "₹5,000", "mismatch": False},
+                    {"label": "currency", "approved": "INR", "attempted": "INR", "mismatch": False},
+                ],
+            })
+
+        elif scenario == "run2":
+            # Run 2: Supplier A approved, Supplier B attempted — BLOCK
+            ap = approvals.create(
+                agent_id=AGENT, task_id=TASK, tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                db_path=db_file,
+            )
+            approvals.approve(ap.id, db_path=db_file)
+            resp = gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier B", "amount": 5000, "currency": "INR"},
+                approval_id=ap.id,
+            )
+            tc = _get_tool_call_count(db_file, "payments.send", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id, "approval_id": ap.id,
+                "tool": "payments.send", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "recipient", "approved": "Supplier A", "attempted": "Supplier B", "mismatch": True},
+                    {"label": "amount", "approved": "₹5,000", "attempted": "₹5,000", "mismatch": False},
+                    {"label": "currency", "approved": "INR", "attempted": "INR", "mismatch": False},
+                ],
+            })
+
+        elif scenario == "run3":
+            # Run 3: Amount changed — BLOCK
+            ap = approvals.create(
+                agent_id=AGENT, task_id=TASK, tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                db_path=db_file,
+            )
+            approvals.approve(ap.id, db_path=db_file)
+            resp = gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 50000, "currency": "INR"},
+                approval_id=ap.id,
+            )
+            tc = _get_tool_call_count(db_file, "payments.send", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id, "approval_id": ap.id,
+                "tool": "payments.send", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "recipient", "approved": "Supplier A", "attempted": "Supplier A", "mismatch": False},
+                    {"label": "amount", "approved": "₹5,000", "attempted": "₹50,000", "mismatch": True},
+                    {"label": "currency", "approved": "INR", "attempted": "INR", "mismatch": False},
+                ],
+            })
+
+        elif scenario == "run4":
+            # Run 4: Expired approval — BLOCK
+            import time as _time
+            ap = approvals.create(
+                agent_id=AGENT, task_id=TASK, tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                db_path=db_file,
+            )
+            approvals.approve(ap.id, db_path=db_file)
+            # Force-expire the approval by updating expires_at to the past
+            conn = get_connection(db_file)
+            conn.execute(
+                "UPDATE approvals SET expires_at = '2020-01-01T00:00:00+00:00' WHERE id = ?",
+                (ap.id,),
+            )
+            conn.commit()
+            conn.close()
+            resp = gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                approval_id=ap.id,
+            )
+            tc = _get_tool_call_count(db_file, "payments.send", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id, "approval_id": ap.id,
+                "tool": "payments.send", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "recipient", "approved": "Supplier A", "attempted": "Supplier A", "mismatch": False},
+                    {"label": "amount", "approved": "₹5,000", "attempted": "₹5,000", "mismatch": False},
+                    {"label": "status", "approved": "Valid", "attempted": "Expired", "mismatch": True},
+                ],
+            })
+
+        elif scenario == "run5":
+            # Run 5: Revoked approval — BLOCK
+            ap = approvals.create(
+                agent_id=AGENT, task_id=TASK, tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                db_path=db_file,
+            )
+            approvals.approve(ap.id, db_path=db_file)
+            approvals.revoke(ap.id, db_path=db_file)
+            resp = gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                approval_id=ap.id,
+            )
+            tc = _get_tool_call_count(db_file, "payments.send", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id, "approval_id": ap.id,
+                "tool": "payments.send", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "recipient", "approved": "Supplier A", "attempted": "Supplier A", "mismatch": False},
+                    {"label": "amount", "approved": "₹5,000", "attempted": "₹5,000", "mismatch": False},
+                    {"label": "status", "approved": "Active", "attempted": "Revoked", "mismatch": True},
+                ],
+            })
+
+        elif scenario == "run6":
+            # Run 6: Read-only agent tries to write — BLOCK
+            resp = gateway.execute(
+                db_path=db_file, agent_id=READER, task_id=READER_TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 1000, "currency": "INR"},
+            )
+            tc = _get_tool_call_count(db_file, "payments.send", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id,
+                "tool": "payments.send", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "agent_role", "approved": "writer", "attempted": "reader", "mismatch": True},
+                    {"label": "permission", "approved": "Allowed", "attempted": "Denied", "mismatch": True},
+                ],
+            })
+
+        elif scenario == "run7":
+            # Run 7: DROP TABLE — BLOCK
+            resp = gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="database.run_sql",
+                params={"sql": "DROP TABLE customers"},
+            )
+            tc = _get_tool_call_count(db_file, "database.run_sql", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id,
+                "tool": "database.run_sql", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "statement", "approved": "SELECT only", "attempted": "DROP TABLE", "mismatch": True},
+                    {"label": "target", "approved": "—", "attempted": "customers", "mismatch": True},
+                ],
+            })
+
+        elif scenario == "run8":
+            # Run 8: Payment above ₹10,000 — ASK HUMAN
+            resp = gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 80000, "currency": "INR"},
+            )
+            tc = _get_tool_call_count(db_file, "payments.send", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id, "approval_id": resp.approval_id,
+                "tool": "payments.send", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "amount", "approved": "≤ ₹10,000", "attempted": "₹80,000", "mismatch": True},
+                    {"label": "action", "approved": "Auto-allow", "attempted": "Needs approval", "mismatch": True},
+                ],
+            })
+
+        elif scenario == "replay":
+            # Replay: reuse a used approval — BLOCK
+            ap = approvals.create(
+                agent_id=AGENT, task_id=TASK, tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                db_path=db_file,
+            )
+            approvals.approve(ap.id, db_path=db_file)
+            # First use (should succeed)
+            gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                approval_id=ap.id,
+            )
+            # Replay attempt (should block)
+            resp = gateway.execute(
+                db_path=db_file, agent_id=AGENT, task_id=TASK,
+                tool="payments.send",
+                params={"recipient": "Supplier A", "amount": 5000, "currency": "INR"},
+                approval_id=ap.id,
+            )
+            tc = _get_tool_call_count(db_file, "payments.send", resp.audit_id)
+            result.update({
+                "decision": resp.decision, "reason": resp.reason, "executed": resp.executed,
+                "audit_id": resp.audit_id, "approval_id": ap.id,
+                "tool": "payments.send", "tool_executions": tc,
+                "params_compare": [
+                    {"label": "token", "approved": "Single-use", "attempted": "Reused", "mismatch": True},
+                    {"label": "status", "approved": "Fresh", "attempted": "Already used", "mismatch": True},
+                ],
+            })
+
+        elif scenario == "gateway_down":
+            # Simulated gateway failure — returns BLOCK with fail-closed reason
+            result.update({
+                "decision": "BLOCK",
+                "reason": "Gateway error: failed closed",
+                "executed": False,
+                "audit_id": None,
+                "tool": "payments.send",
+                "tool_executions": 0,
+                "params_compare": [
+                    {"label": "gateway", "approved": "Online", "attempted": "Unreachable", "mismatch": True},
+                    {"label": "failsafe", "approved": "—", "attempted": "Block all", "mismatch": True},
+                ],
+            })
+
+        else:
+            raise HTTPException(status_code=400, detail=f"Unknown scenario: {scenario!r}")
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.error("Demo scenario %s failed: %s", scenario, type(exc).__name__)
+        result.update({
+            "decision": "BLOCK",
+            "reason": f"Scenario error: {type(exc).__name__}",
+            "executed": False,
+            "tool_executions": 0,
+        })
+
+    # Broadcast scenario event
+    await manager.broadcast({
+        "type": "demo.scenario",
+        "data": result,
+    })
+
+    return result
+
+
+def _get_tool_call_count(db_file: str, tool: str, audit_id: Optional[int]) -> int:
+    """Helper: count tool_calls rows for a specific audit_id."""
+    if audit_id is None:
+        return 0
+    conn = get_connection(db_file)
+    try:
+        row = conn.execute(
+            "SELECT COUNT(*) AS cnt FROM tool_calls WHERE audit_id = ? AND tool = ?",
+            (audit_id, tool),
+        ).fetchone()
+        return row["cnt"] if row else 0
+    finally:
+        conn.close()
+
+
 # ---------------------------------------------------------------------------
 # 7. Benchmark / Test Results (plan.md §C5)
 # ---------------------------------------------------------------------------

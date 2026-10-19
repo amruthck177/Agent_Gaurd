@@ -1,0 +1,22 @@
+{
+  "simulatedChat": "ಸಿಮ್ಯುಲೇಟೆಡ್ ಚಾಟ್",
+  "title": "ಏಜೆಂಟ್‌ಗಾರ್ಡ್ ಎಚ್ಚರಿಕೆಗಳು",
+  "enclaveActive": "ಎನ್‌ಕ್ಲೇವ್ ಸುರಕ್ಷಿತ",
+  "todayDispatch": "ಇಂದು • ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಗೇಟ್‌ವೇ ರವಾನೆ",
+  "policyNotice": "ಬಾಹ್ಯ API ಕಾರ್ಯಗತಗೊಳಿಸುವ ಮೊದಲು ಹೆಚ್ಚಿನ ಮೌಲ್ಯದ ವಹಿವಾಟಿಗೆ ಸ್ಪಷ್ಟ ಮಾನವ ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆ.",
+  "toolLabel": "ಟೂಲ್ ಕರೆ",
+  "recipientLabel": "ಸ್ವೀಕರಿಸುವವರು",
+  "amountLabel": "ನಿಗದಿಪಡಿಸಿದ ಮೊತ್ತ",
+  "truthDisclaimer": "This is the real action, not the agent's explanation.",
+  "approveButton": "ಅನುಮೋದಿಸಿ",
+  "rejectButton": "ತಿರಸ್ಕರಿಸಿ",
+  "approvedSuccess": "Approved. Valid for 10 minutes for exactly this action.",
+  "rejectedSuccess": "Rejected. Nothing was paid.",
+  "expiredNotice": "ಅಧಿಕಾರಾವಧಿ ಮುಗಿದಿದೆ. ಟೋಕನ್ ರದ್ದುಗೊಂಡಿದೆ.",
+  "revokedNotice": "ಭದ್ರತಾ ನಿರ್ವಾಹಕರಿಂದ ಅಧಿಕಾರವನ್ನು ಹಿಂಪಡೆಯಲಾಗಿದೆ.",
+  "securingSession": "ಕ್ರಿಪ್ಟೋಗ್ರಾಫಿಕ್ ಸೆಷನ್ ಸುರಕ್ಷಿತಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
+  "notFoundTitle": "ಅನುಮೋದನೆ ವಿನಂತಿ ಕಂಡುಬಂದಿಲ್ಲ",
+  "notFoundDesc": "ಈ ದೃಢೀಕರಣ ಲಿಂಕ್ ಅವಧಿ ಮೀರಿದೆ, ಅಮಾನ್ಯವಾಗಿದೆ ಅಥವಾ ಈಗಾಗಲೇ ಪರಿಹರಿಸಲಾಗಿದೆ.",
+  "backToApprovals": "ಅನುಮೋದನೆ ಕನ್ಸೋಲ್‌ಗೆ ಹಿಂತಿರುಗಿ",
+  "footerBinding": "HMAC-SHA256 ಟೋಕನ್ ಬೈಂಡಿಂಗ್ · ಶೂನ್ಯ ಬದಲಾವಣೆ ಶೇಖರಣೆ"
+}

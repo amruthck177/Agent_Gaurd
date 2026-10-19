@@ -1,0 +1,22 @@
+{
+  "simulatedChat": "Simulated chat",
+  "title": "AgentGuard Alerts",
+  "enclaveActive": "ENCLAVE SECURE",
+  "todayDispatch": "TODAY • ENCRYPTED GATEWAY DISPATCH",
+  "policyNotice": "High-value transaction requires explicit out-of-band human confirmation before external API execution.",
+  "toolLabel": "Tool Call",
+  "recipientLabel": "Recipient Payee",
+  "amountLabel": "Bound Amount",
+  "truthDisclaimer": "This is the real action, not the agent's explanation.",
+  "approveButton": "Approve Bound",
+  "rejectButton": "Reject Action",
+  "approvedSuccess": "Approved. Valid for 10 minutes for exactly this action.",
+  "rejectedSuccess": "Rejected. Nothing was paid.",
+  "expiredNotice": "Authorization expired. Token invalidated.",
+  "revokedNotice": "Authorization was revoked by security administrator.",
+  "securingSession": "Securing cryptographic session...",
+  "notFoundTitle": "Approval Request Not Found",
+  "notFoundDesc": "This authorization link may be expired, invalid, or already resolved.",
+  "backToApprovals": "Back to Approvals Console",
+  "footerBinding": "HMAC-SHA256 Token Binding · Zero Mutable Storage"
+}

@@ -1,0 +1,22 @@
+{
+  "simulatedChat": "सिम्युलेटेड चैट",
+  "title": "एजेंटगार्ड अलर्ट",
+  "enclaveActive": "एन्क्लेव सुरक्षित",
+  "todayDispatch": "आज • एन्क्रिप्टेड गेटवे प्रेषण",
+  "policyNotice": "बाहरी एपीआई निष्पादन से पहले उच्च-मूल्य के लेन-देन के लिए स्पष्ट मानवीय पुष्टि की आवश्यकता है।",
+  "toolLabel": "टूल कॉल",
+  "recipientLabel": "प्राप्तकर्ता",
+  "amountLabel": "बाध्य राशि",
+  "truthDisclaimer": "This is the real action, not the agent's explanation.",
+  "approveButton": "स्वीकृत करें",
+  "rejectButton": "अस्वीकार करें",
+  "approvedSuccess": "Approved. Valid for 10 minutes for exactly this action.",
+  "rejectedSuccess": "Rejected. Nothing was paid.",
+  "expiredNotice": "प्राधिकार समाप्त। टोकन अमान्य किया गया।",
+  "revokedNotice": "सुरक्षा व्यवस्थापक द्वारा प्राधिकार रद्द किया गया।",
+  "securingSession": "क्रिप्टोग्राफिक सत्र सुरक्षित किया जा रहा है...",
+  "notFoundTitle": "अनुमोदन अनुरोध नहीं मिला",
+  "notFoundDesc": "यह प्राधिकरण लिंक समाप्त, अमान्य या पहले से ही हल हो सकता है।",
+  "backToApprovals": "अनुमोदन कंसोल पर लौटें",
+  "footerBinding": "एचएमएसी-एसएचए256 टोकन बाइंडिंग · शून्य परिवर्तनशील भंडारण"
+}

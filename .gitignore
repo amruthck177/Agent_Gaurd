@@ -1,9 +1,11 @@
 # Dependencies
 node_modules/
 venv/
+venv_new/
 .venv/
 __pycache__/
 *.pyc
+*.pyo
 
 # Database
 *.db
@@ -23,3 +25,23 @@ build/
 # Misc
 .DS_Store
 Thumbs.db
+
+# Recordings & generated media (demo videos, audio, frames)
+recordings/
+test_sample.mp3
+
+# Demo/automation scripts (not part of core project)
+scripts/
+
+# IDE & editor config
+.vscode/
+.idea/
+
+# Playwright MCP temp
+.playwright-mcp/
+
+# Pyrefly (local linting tool)
+pyrefly.toml
+
+# Stitch/design temp docs
+docs/stitch-inventory.md

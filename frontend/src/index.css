@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0B1220;
+  --surface: #121B2E;
+  --surface-2: #18233A;
+  --border: #24304A;
+  --text: #E8ECF4;
+  --text-2: #9AA6BF;
+  --accent: #C8963E;
+  --allow: #2E9E5B;
+  --ask: #F2B705;
+  --block: #D64545;
+  --info: #4C8DF6;
+  --radius-card: 12px;
+  --radius-chip: 8px;
+  --radius-pill: 999px;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+[data-theme='light'] {
+  --bg: #F6F7FA;
+  --surface: #FFFFFF;
+  --surface-2: #F0F2F7;
+  --border: #D9DEE8;
+  --text: #101828;
+  --text-2: #475467;
+  --accent: #C8963E;
+  --allow: #1E7F5C;
+  --ask: #B7791F;
+  --block: #C62828;
+  --info: #4C8DF6;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* LIVE dot pulse glow */
+@keyframes live-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(46, 158, 91, 0.7);
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.85;
+    box-shadow: 0 0 0 6px rgba(46, 158, 91, 0);
+  }
+}
+
+.animate-live-dot {
+  animation: live-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Focus glow on accent elements */
+.focus-accent:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.25);
+}
