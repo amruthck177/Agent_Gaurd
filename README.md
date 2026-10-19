@@ -35,6 +35,7 @@
 - [Project Structure](#-project-structure)
 - [Testing](#-testing)
 - [Benchmark Results](#-benchmark-results)
+- [Commit History & Changelog](#-commit-history--changelog)
 - [Known Limitations & Scope Boundaries](#-known-limitations--scope-boundaries)
 - [Team](#-team)
 - [License](#-license)
@@ -342,19 +343,40 @@ Run AgentGuard locally on any machine in under 3 minutes. Zero external dependen
 - **Node.js 18+** & **npm** installed
 
 ```bash
-# Terminal 1 — Backend
+# Terminal 1 — Backend Setup & Launch
+# 1. Clone the project repository from GitHub
 git clone https://github.com/amruthck177/Agent_Gaurd.git
+
+# 2. Navigate to the project root directory
 cd Agent_Gaurd
+
+# 3. Create an isolated Python virtual environment
 python -m venv venv
-venv\Scripts\activate        # Windows (or source venv/bin/activate on Mac/Linux)
+
+# 4. Activate the virtual environment
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # macOS / Linux
+
+# 5. Install all backend dependencies (FastAPI, Uvicorn, Pydantic, pytest)
 pip install -r requirements.txt
+
+# 6. Copy the environment configuration template (safe local defaults)
 cp .env.example .env
+
+# 7. Start the FastAPI gateway server on localhost:8000 with auto-reload
 uvicorn app.main:app --reload --app-dir backend --host 127.0.0.1 --port 8000
 
-# Terminal 2 — Frontend
+# Terminal 2 — Frontend Setup & Launch
+# 1. Navigate to the frontend directory
 cd frontend
+
+# 2. Install all Node.js dependencies
 npm install
+
+# 3. Start the Vite development server (proxies API requests to port 8000)
 npm run dev
+
+# 4. Access the web security console in your browser
 # → Open http://localhost:5173
 ```
 
@@ -505,6 +527,26 @@ AgentGuard incorporates an automated benchmark runner (`benchmarks/run_benchmark
 | **INV-6** | Replay / duplicate blocked | ✅ **PASS** | Atomic SQL update ensures single-use token lifecycle |
 | **INV-7** | High-value actions escalated | ✅ **PASS** | Transactions > ₹10,000 automatically routed to human approval |
 | **INV-8** | Fail-closed on system error | ✅ **PASS** | Gateway exceptions immediately resolve to `BLOCK` |
+
+---
+
+## 📜 Commit History & Changelog
+
+| Commit Hash | Type | Commit Message | Scope & Purpose |
+|---|---|---|---|
+| `33c565a` | `docs` | `docs: streamline Quick Start guide with concise two-terminal setup commands` | Updated README Quick Start section with ready-to-run two-terminal guide |
+| `a1aba87` | `docs` | `docs: expand README with detailed methodology, zero-trust model, and benchmarks` | Comprehensive architecture, zero-trust lifecycle, threat model, and benchmarks |
+| `77e1612` | `docs` | `docs: comprehensive README with architecture, enforcement pipeline, API reference, benchmarks` | Initial comprehensive system documentation and test suite breakdown |
+| `8a969fb` | `docs` | `docs: update README with complete clone-and-run setup instructions` | Added clone-and-run instructions and dependency checklists |
+| `205fa1b` | `feat` | `feat: add React frontend, fix DecisionChip types, update .gitignore for clean repo` | Integrated React 18 console, fixed TypeScript types, and cleaned repo exclusions |
+| `7faa337` | `freeze` | `backend-frozen: API contract, OpenAPI spec, B7 HTTP story test, B6 CORS/demo checks` | Finalized core backend contract, OpenAPI spec, and end-to-end HTTP tests |
+| `720d93e` | `chore` | `chore: update benchmark results artifact` | Updated automated benchmark metrics report and results artifact |
+| `5a5faaf` | `docs` | `docs: document Known Limitations and production roadmap (R1)` | Documented architectural boundaries, SQLite scope, and production roadmap |
+| `5b7074d` | `fix` | `fix(security): R3 re-read approval on atomic update failure to prevent TOCTOU reason mismatch` | Fixed race condition state re-read on atomic update failures |
+| `8aab323` | `fix` | `fix(security): R2+R4 scrub secrets from 500 responses and logs` | Sanitized credentials, tokens, and account numbers from logs and error payloads |
+| `452ce2b` | `fix` | `fix(security): R5 mitigate SQL CTE and comment/stacked statement bypass` | Enhanced SQL classification against stacked injection, comments, and CTE bypasses |
+| `155693a` | `feat` | `feat: checkpoint baseline before security audit fixes` | Baseline checkpoint of gateway, policy engine, and approvals store |
+| `80f1ab0` | `chore` | `chore: workspace setup` | Initial repository scaffolding and project directory setup |
 
 ---
 
