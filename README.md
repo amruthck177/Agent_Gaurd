@@ -32,6 +32,7 @@
 - [API Reference](#-api-reference)
 - [Tech Stack](#-tech-stack)
 - [Quick Start Guide](#-quick-start-guide)
+- [Deployment Guide](#-deployment-guide)
 - [Project Structure](#-project-structure)
 - [Testing](#-testing)
 - [Benchmark Results](#-benchmark-results)
@@ -384,13 +385,103 @@ npm run dev
 
 ---
 
+## 🚢 Deployment Guide
+
+AgentGuard 2.0 is architected for zero-friction production deployment. The FastAPI backend can natively serve both the REST API and the compiled React SPA from a unified container, eliminating complex reverse-proxy setups and CORS overhead.
+
+### Option 1: Docker Compose (Recommended)
+
+Run the entire stack in an isolated, volume-backed production container with one command:
+
+```bash
+# Clone and build
+git clone https://github.com/amruthck177/Agent_Gaurd.git
+cd Agent_Gaurd
+
+# Start container in detached mode
+docker compose up --build -d
+
+# Check container health and logs
+docker compose ps
+docker compose logs -f
+```
+
+- **Web Console & API:** Available at `http://localhost:8000`
+- **Health Check:** `http://localhost:8000/health`
+- **Data Persistence:** Automated Docker volume `agentguard_data` mounts `/app/data/agentguard.db`
+
+---
+
+### Option 2: Cloud PaaS (Render, Railway, Fly.io, Heroku)
+
+AgentGuard includes native configuration manifests for one-click cloud hosting:
+
+#### A. Render.com
+1. Fork or push the repo to GitHub.
+2. In Render, click **New > Blueprint** and link your repo.
+3. Render automatically reads [render.yaml](file:///c:/Users/amrut/OneDrive/Desktop/AgentGaurd/render.yaml), attaches a 1GB persistent disk, builds the multi-stage Dockerfile, and deploys.
+
+#### B. Railway / Google Cloud Run / AWS ECS
+Deploy directly using the [Dockerfile](file:///c:/Users/amrut/OneDrive/Desktop/AgentGaurd/Dockerfile):
+```bash
+# Example with Google Cloud Run
+gcloud run deploy agentguard \
+  --source . \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --port 8000
+```
+
+---
+
+### Option 3: Standalone Linux VM / Bare Metal (Systemd + Uvicorn)
+
+For standard Ubuntu/Debian cloud servers:
+
+```bash
+# 1. Build frontend bundle once
+cd frontend && npm install && npm run build && cd ..
+
+# 2. Setup backend in virtualenv
+python -m venv venv
+venv/bin/pip install -r requirements.txt
+cp .env.production.example .env
+
+# 3. Launch single-process unified server (API + Frontend UI)
+STATIC_DIR=frontend/dist uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 8000 --workers 4
+```
+
+---
+
+### ⚙️ Production Environment Variables
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `PORT` | `8000` | Port for the HTTP/WebSocket server |
+| `DEMO_MODE` | `1` | `1` enables demo reset and tamper test routes; set `0` for locked-down enterprise |
+| `AGENTGUARD_DB_PATH` | `agentguard.db` | File path to SQLite database (use persistent volume) |
+| `STATIC_DIR` | `/app/static` | Path to compiled React bundle (FastAPI auto-serves when present) |
+| `APPROVAL_TTL_SECONDS` | `600` | Human approval token validity window (seconds) |
+| `CORS_ORIGINS` | `http://localhost:5173` | Comma-separated list of additional allowed CORS web origins |
+| `LOG_LEVEL` | `INFO` | Python application logging level |
+
+---
+
 ## 📁 Project Structure
 
 ```
 Agent_Gaurd/
+├── .dockerignore                # Container build exclusions
 ├── .env.example                 # Environment variable template with safe defaults
+├── .env.production.example      # Production environment configuration reference
+├── .github/workflows/ci.yml     # Automated CI/CD pipeline (tests, build, docker)
 ├── .gitignore                   # Git exclusion rules (no cache, DB, or media)
+├── Dockerfile                   # Multi-stage production container manifest
+├── docker-compose.yml           # Production Docker Compose orchestration
+├── Procfile                     # PaaS deployment entrypoint (Railway/Heroku)
 ├── README.md                    # Comprehensive system documentation
+├── render.yaml                  # Render.com Blueprint deployment manifest
 ├── requirements.txt             # Pinned Python dependencies
 ├── results.txt                  # Automated benchmark output values
 │
@@ -534,6 +625,8 @@ AgentGuard incorporates an automated benchmark runner (`benchmarks/run_benchmark
 
 | Commit Hash | Type | Commit Message | Scope & Purpose |
 |---|---|---|---|
+| *Pending* | `feat` | `deploy: add production multi-stage Dockerfile, docker-compose, render.yaml, CI/CD, and SPA serving` | Unified deployment infrastructure for single-container, PaaS, and cloud hosting |
+| `9bbfa5c` | `docs` | `docs: add command line comments and complete commit history changelog table` | Added line-by-line command comments and commit changelog |
 | `33c565a` | `docs` | `docs: streamline Quick Start guide with concise two-terminal setup commands` | Updated README Quick Start section with ready-to-run two-terminal guide |
 | `a1aba87` | `docs` | `docs: expand README with detailed methodology, zero-trust model, and benchmarks` | Comprehensive architecture, zero-trust lifecycle, threat model, and benchmarks |
 | `77e1612` | `docs` | `docs: comprehensive README with architecture, enforcement pipeline, API reference, benchmarks` | Initial comprehensive system documentation and test suite breakdown |

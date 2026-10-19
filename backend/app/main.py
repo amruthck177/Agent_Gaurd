@@ -49,7 +49,8 @@ from fastapi import (
 )
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app import approvals, audit, gateway, policy
 from app.db import DB_PATH, get_connection, init_db, reset_db, seed_demo
@@ -165,10 +166,18 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS: Enabled strictly for the frontend dashboard at http://localhost:5173
+# CORS: Enabled strictly for localhost:5173 by default; extensible via CORS_ORIGINS env var
+_cors_origins_env = os.environ.get("CORS_ORIGINS", "")
+_allowed_origins = ["http://localhost:5173"]
+if _cors_origins_env:
+    for _origin in _cors_origins_env.split(","):
+        _origin_clean = _origin.strip()
+        if _origin_clean and _origin_clean not in _allowed_origins:
+            _allowed_origins.append(_origin_clean)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -908,3 +917,38 @@ async def websocket_events_endpoint(websocket: WebSocket):
         await manager.disconnect(websocket)
     except Exception:
         await manager.disconnect(websocket)
+
+
+# ---------------------------------------------------------------------------
+# 9. Static Assets & Production Single-Container SPA Serving
+# ---------------------------------------------------------------------------
+STATIC_DIR = os.environ.get("STATIC_DIR")
+if not STATIC_DIR:
+    candidates = [
+        Path("/app/static"),
+        Path(__file__).resolve().parent.parent.parent / "frontend" / "dist",
+        Path(__file__).resolve().parent.parent / "static",
+    ]
+    for c in candidates:
+        if c.is_dir() and (c / "index.html").is_file():
+            STATIC_DIR = str(c)
+            break
+
+if STATIC_DIR and Path(STATIC_DIR).is_dir():
+    static_path = Path(STATIC_DIR)
+    assets_dir = static_path / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        if full_path.startswith(("v1", "ws", "health", "docs", "openapi.json")):
+            raise HTTPException(status_code=404, detail="Not Found")
+        target_file = static_path / full_path
+        if target_file.is_file():
+            return FileResponse(target_file)
+        index_file = static_path / "index.html"
+        if index_file.is_file():
+            return FileResponse(index_file)
+        raise HTTPException(status_code=404, detail="Not Found")
+

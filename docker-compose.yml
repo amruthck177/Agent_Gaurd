@@ -1,0 +1,25 @@
+services:
+  agentguard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agentguard-gateway
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      - PORT=8000
+      - DEMO_MODE=1
+      - AGENTGUARD_DB_PATH=/app/data/agentguard.db
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:8000
+    volumes:
+      - agentguard_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  agentguard_data:

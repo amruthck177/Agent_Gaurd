@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: agentguard
+    runtime: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DEMO_MODE
+        value: "1"
+      - key: AGENTGUARD_DB_PATH
+        value: "/app/data/agentguard.db"
+    disk:
+      name: agentguard-data
+      mountPath: /app/data
+      sizeGB: 1
