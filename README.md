@@ -341,54 +341,24 @@ Run AgentGuard locally on any machine in under 3 minutes. Zero external dependen
 - **Python 3.11+** installed
 - **Node.js 18+** & **npm** installed
 
-### Step 1: Clone the Repository
 ```bash
+# Terminal 1 — Backend
 git clone https://github.com/amruthck177/Agent_Gaurd.git
 cd Agent_Gaurd
-```
-
-### Step 2: Launch Backend
-Open a terminal in the project root:
-
-```bash
-# 1. Create and activate a Python virtual environment
 python -m venv venv
-
-# Windows:
-venv\Scripts\activate
-# macOS / Linux:
-# source venv/bin/activate
-
-# 2. Install backend dependencies
+venv\Scripts\activate        # Windows (or source venv/bin/activate on Mac/Linux)
 pip install -r requirements.txt
-
-# 3. Setup environment variables (default values work immediately)
 cp .env.example .env
-
-# 4. Start the FastAPI gateway server on port 8000
 uvicorn app.main:app --reload --app-dir backend --host 127.0.0.1 --port 8000
-```
-Verify the backend is live:
-```bash
-curl http://127.0.0.1:8000/health
-# Response: {"status":"ok"}
-```
 
-### Step 3: Launch Frontend
-Open a second terminal in the project root:
-
-```bash
-# Navigate to frontend directory
+# Terminal 2 — Frontend
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start Vite development server
 npm run dev
+# → Open http://localhost:5173
 ```
 
-Open your browser at **`http://localhost:5173`**. The frontend automatically proxies all `/v1` and `/health` requests to `http://127.0.0.1:8000`.
+> **Note:** The frontend automatically proxies all `/v1` and `/health` requests to the backend at `http://127.0.0.1:8000`.
 
 ---
 
